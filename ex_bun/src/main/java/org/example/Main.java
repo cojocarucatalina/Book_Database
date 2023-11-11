@@ -22,6 +22,13 @@ public class Main {
                 .build();
 
 
+        Book book1 = new BookBuilder()
+                .setTitle("Harry Potter")
+                .setAuthor("J.K. Rowling")
+                .setPublishedDate(LocalDate.of(2010, 7, 3))
+                .build();
+
+
         System.out.println(book);
         System.out.println(bookRepository.findAll());
 
