@@ -9,7 +9,6 @@ public class BookBuilder {
 
     private Book book;
 
-
     public BookBuilder(){
         book = new Book();
     }
@@ -38,6 +37,5 @@ public class BookBuilder {
     {
         return book;
     }
-
 
 }

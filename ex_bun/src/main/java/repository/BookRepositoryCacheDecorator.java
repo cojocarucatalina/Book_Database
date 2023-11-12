@@ -1,6 +1,8 @@
 package repository;
 
+import model.AudioBook;
 import model.Book;
+import model.EBook;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +44,16 @@ public class BookRepositoryCacheDecorator extends BookRepositoryDecorator{
     public boolean save(Book book) {
         cache.invalidateCache();
         return decoratedRepository.save(book);
+    }
+
+    @Override
+    public boolean save(EBook eBook) {
+        return false;
+    }
+
+    @Override
+    public boolean save(AudioBook audioBook) {
+        return false;
     }
 
     @Override

@@ -3,7 +3,9 @@ package org.example;
 import database.DatabaseConnectionFactory;
 import database.JDBConnectionWrapper;
 import model.Book;
+import model.EBook;
 import model.builder.BookBuilder;
+import model.builder.EBookBuilder;
 import repository.BookRepository;
 import repository.BookRepositoryCacheDecorator;
 import repository.BookRepositoryMySQL;
@@ -45,14 +47,26 @@ public class Main {
                 .setPublishedDate(LocalDate.of(2010, 7, 3))
                 .build();
 
+        EBook book4  = new EBookBuilder()
+                .setTitle("Percy Jackson")
+                .setAuthor("Rick Riordan")
+                .setPublishedDate(LocalDate.of(2010, 10, 14))
+                .setFormat("pdf")
+                .build();
+
+
 
         System.out.println(book1);
         System.out.println(book2);
         System.out.println(book3);
+        System.out.println(book4);
 
         bookService.save(book1);
         bookService.save(book2);
         bookService.save(book3);
+        bookService.save(book4);
+
+        //  bookRepository.removeAll();
 
         System.out.println(bookService.findAll());
 

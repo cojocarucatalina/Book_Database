@@ -1,7 +1,11 @@
 package repository;
 
+import model.AudioBook;
 import model.Book;
+import model.EBook;
+import model.builder.AudioBookBuilder;
 import model.builder.BookBuilder;
+import model.builder.EBookBuilder;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -36,6 +40,7 @@ public class BookRepositoryMySQL implements BookRepository{
 
         return books;
     }
+
 
     @Override
     public Optional<Book> findById(Long id) {
@@ -105,6 +110,65 @@ public class BookRepositoryMySQL implements BookRepository{
     }
 
     @Override
+    public boolean save(EBook eBook) {
+        String sql = "INSERT INTO book VALUES(null, ?, ?, ?, ?);";
+
+        String newSql = "INSERT INTO book VALUES(null, \'" + eBook.getAuthor() +"\', \'"+ eBook.getTitle()+"\', \'"+ eBook.getFormat()+"\', null );";
+
+
+        try{
+//            Statement statement = connection.createStatement();
+//            statement.executeUpdate(newSql);
+//            return true;
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, eBook.getAuthor());
+            preparedStatement.setString(2, eBook.getTitle());
+            preparedStatement.setDate(3, java.sql.Date.valueOf(eBook.getPublishedDate()));
+            preparedStatement.setString(4, eBook.getFormat());
+
+            int rowsInserted = preparedStatement.executeUpdate();
+
+            return (rowsInserted != 1) ? false : true;
+
+        } catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
+    @Override
+    public boolean save(AudioBook audioBook) {
+        String sql = "INSERT INTO book VALUES(null, ?, ?, ?, ?);";
+
+        String newSql = "INSERT INTO book VALUES(null, \'" + audioBook.getAuthor() +"\', \'"+ audioBook.getTitle()+"\', \'"+ audioBook.getRunTime()+"\', null );";
+
+
+        try{
+//            Statement statement = connection.createStatement();
+//            statement.executeUpdate(newSql);
+//            return true;
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, audioBook.getAuthor());
+            preparedStatement.setString(2, audioBook.getTitle());
+            preparedStatement.setDate(3, java.sql.Date.valueOf(audioBook.getPublishedDate()));
+            preparedStatement.setInt(4, audioBook.getRunTime());
+
+            int rowsInserted = preparedStatement.executeUpdate();
+
+            return (rowsInserted != 1) ? false : true;
+
+        } catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
+
+    @Override
     public void removeAll() {
         String sql = "DELETE FROM book WHERE id >= 0;";
 
@@ -117,11 +181,35 @@ public class BookRepositoryMySQL implements BookRepository{
     }
 
     private Book getBookFromResultSet(ResultSet resultSet) throws SQLException{
-        return new BookBuilder()
-                .setId(resultSet.getLong("id"))
-                .setTitle(resultSet.getString("title"))
-                .setAuthor(resultSet.getString("author"))
-                .setPublishedDate(new java.sql.Date(resultSet.getDate("publishedDate").getTime()).toLocalDate())
-                .build();
+        Book bookForTest;
+        bookForTest = new BookBuilder()
+                    .setId(resultSet.getLong("id"))
+                    .setTitle(resultSet.getString("title"))
+                    .setAuthor(resultSet.getString("author"))
+                    .setPublishedDate(new java.sql.Date(resultSet.getDate("publishedDate").getTime()).toLocalDate())
+                    .build();
+
+        if (bookForTest instanceof EBook) {
+            bookForTest = new EBookBuilder()
+                    .setId(resultSet.getLong("id"))
+                    .setTitle(resultSet.getString("title"))
+                    .setAuthor(resultSet.getString("author"))
+                    .setPublishedDate(new java.sql.Date(resultSet.getDate("publishedDate").getTime()).toLocalDate())
+                    .setFormat(resultSet.getString("format"))
+                    .build();
+        }
+        else
+        if (bookForTest instanceof AudioBook) {
+            bookForTest = new AudioBookBuilder()
+                    .setId(resultSet.getLong("id"))
+                    .setTitle(resultSet.getString("title"))
+                    .setAuthor(resultSet.getString("author"))
+                    .setPublishedDate(new java.sql.Date(resultSet.getDate("publishedDate").getTime()).toLocalDate())
+                    .setRunTime(resultSet.getInt("runtime"))
+                    .build();
+        }
+
+        return bookForTest;
     }
+
 }

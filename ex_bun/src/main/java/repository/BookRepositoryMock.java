@@ -1,6 +1,8 @@
 package repository;
 
+import model.AudioBook;
 import model.Book;
+import model.EBook;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,16 @@ public class BookRepositoryMock implements BookRepository{
     @Override
     public boolean save(Book book) {
         return books.add(book);
+    }
+
+    @Override
+    public boolean save(EBook eBook) {
+        return false;
+    }
+
+    @Override
+    public boolean save(AudioBook audioBook) {
+        return false;
     }
 
     @Override
