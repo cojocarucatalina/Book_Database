@@ -23,8 +23,8 @@ public class Main {
 
 
         Book book1 = new BookBuilder()
-                .setTitle("Harry Potter")
-                .setAuthor("J.K. Rowling")
+                .setTitle("Portretul lui Dorian Gray")
+                .setAuthor("Oscar Wilde")
                 .setPublishedDate(LocalDate.of(2010, 7, 3))
                 .build();
 
