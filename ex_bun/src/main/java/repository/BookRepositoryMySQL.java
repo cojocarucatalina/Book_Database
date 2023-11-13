@@ -114,64 +114,6 @@ public class BookRepositoryMySQL implements BookRepository{
 
     }
 
-    @Override
-    public boolean save(EBook eBook) {
-        String sql = "INSERT INTO book VALUES(null, ?, ?, ?, ?);";
-
-        String newSql = "INSERT INTO book VALUES(null, \'" + eBook.getAuthor() +"\', \'"+ eBook.getTitle()+"\', \'"+ eBook.getFormat()+"\', null );";
-
-
-        try{
-//            Statement statement = connection.createStatement();
-//            statement.executeUpdate(newSql);
-//            return true;
-
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, eBook.getAuthor());
-            preparedStatement.setString(2, eBook.getTitle());
-            preparedStatement.setDate(3, java.sql.Date.valueOf(eBook.getPublishedDate()));
-            preparedStatement.setString(4, eBook.getFormat());
-
-            int rowsInserted = preparedStatement.executeUpdate();
-
-            return (rowsInserted != 1) ? false : true;
-
-        } catch (SQLException e){
-            e.printStackTrace();
-            return false;
-        }
-
-    }
-
-    @Override
-    public boolean save(AudioBook audioBook) {
-        String sql = "INSERT INTO book VALUES(null, ?, ?, ?, ?);";
-
-        String newSql = "INSERT INTO book VALUES(null, \'" + audioBook.getAuthor() +"\', \'"+ audioBook.getTitle()+"\', \'"+ audioBook.getRunTime()+"\', null );";
-
-
-        try{
-//            Statement statement = connection.createStatement();
-//            statement.executeUpdate(newSql);
-//            return true;
-
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, audioBook.getAuthor());
-            preparedStatement.setString(2, audioBook.getTitle());
-            preparedStatement.setDate(3, java.sql.Date.valueOf(audioBook.getPublishedDate()));
-            preparedStatement.setInt(4, audioBook.getRunTime());
-
-            int rowsInserted = preparedStatement.executeUpdate();
-
-            return (rowsInserted != 1) ? false : true;
-
-        } catch (SQLException e){
-            e.printStackTrace();
-            return false;
-        }
-
-    }
-
 
     @Override
     public void removeAll() {

@@ -2,8 +2,10 @@ package org.example;
 
 import database.DatabaseConnectionFactory;
 import database.JDBConnectionWrapper;
+import model.AudioBook;
 import model.Book;
 import model.EBook;
+import model.builder.AudioBookBuilder;
 import model.builder.BookBuilder;
 import model.builder.EBookBuilder;
 import repository.BookRepository;
@@ -41,10 +43,11 @@ public class Main {
                 .setPublishedDate(LocalDate.of(2010, 7, 3))
                 .build();
 
-        Book book3 = new BookBuilder()
+        AudioBook book3 = new AudioBookBuilder()
                 .setTitle("Printre tonuri cenusii")
                 .setAuthor("Ruta Sepetys")
                 .setPublishedDate(LocalDate.of(2010, 7, 3))
+                .setRunTime(333)
                 .build();
 
         EBook book4  = new EBookBuilder()
@@ -72,7 +75,6 @@ public class Main {
 
         System.out.println(bookService.findAll());
         System.out.println(bookService.findAll());
-
 
 
 

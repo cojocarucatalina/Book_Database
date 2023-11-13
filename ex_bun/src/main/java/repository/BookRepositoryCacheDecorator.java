@@ -46,15 +46,6 @@ public class BookRepositoryCacheDecorator extends BookRepositoryDecorator{
         return decoratedRepository.save(book);
     }
 
-    @Override
-    public boolean save(EBook eBook) {
-        return false;
-    }
-
-    @Override
-    public boolean save(AudioBook audioBook) {
-        return false;
-    }
 
     @Override
     public void removeAll() {

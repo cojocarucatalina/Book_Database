@@ -34,16 +34,6 @@ public class BookRepositoryMock implements BookRepository{
     }
 
     @Override
-    public boolean save(EBook eBook) {
-        return false;
-    }
-
-    @Override
-    public boolean save(AudioBook audioBook) {
-        return false;
-    }
-
-    @Override
     public void removeAll() {
         books.clear();
     }

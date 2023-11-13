@@ -15,8 +15,6 @@ public interface BookRepository {
     // Optional<EBook> findById(Long id);
 
     boolean save(Book book);
-    boolean save(EBook eBook);
-    boolean save(AudioBook audioBook);
 
     void removeAll();
 
