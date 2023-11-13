@@ -83,29 +83,34 @@ public class BookRepositoryMySQL implements BookRepository{
 
     @Override
     public boolean save(Book book) {
-        String sql = "INSERT INTO book VALUES(null, ?, ?, ?);";
 
-        String newSql = "INSERT INTO book VALUES(null, \'" + book.getAuthor() +"\', \'"+ book.getTitle()+"\', null );";
+        String sql = "INSERT INTO book VALUES(null, ?, ?, ?, ?, ?);";
 
-
-        try{
-//            Statement statement = connection.createStatement();
-//            statement.executeUpdate(newSql);
-//            return true;
-
+        try {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, book.getAuthor());
             preparedStatement.setString(2, book.getTitle());
             preparedStatement.setDate(3, java.sql.Date.valueOf(book.getPublishedDate()));
 
+            if (book instanceof EBook) {
+                preparedStatement.setString(4, ((EBook) book).getFormat());
+                preparedStatement.setNull(5, java.sql.Types.INTEGER);
+            } else if (book instanceof AudioBook) {
+                preparedStatement.setNull(4, java.sql.Types.VARCHAR);
+                preparedStatement.setInt(5, ((AudioBook) book).getRunTime());
+            } else {
+                preparedStatement.setNull(4, java.sql.Types.VARCHAR);
+                preparedStatement.setNull(5, java.sql.Types.INTEGER);
+            }
+
             int rowsInserted = preparedStatement.executeUpdate();
 
-            return (rowsInserted != 1) ? false : true;
-
-        } catch (SQLException e){
+            return (rowsInserted != 1);
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
+
 
     }
 
