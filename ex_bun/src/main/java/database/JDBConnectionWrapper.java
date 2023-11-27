@@ -13,7 +13,7 @@ public class JDBConnectionWrapper {
 
     private static final String USER = "root";
 
-    private static final String PASSWORD = "root";
+    private static final String PASSWORD = "octombrie";
 
     private static final int TIMEOUT = 5;
 
