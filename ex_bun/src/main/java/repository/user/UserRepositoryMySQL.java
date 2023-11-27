@@ -69,7 +69,18 @@ public class UserRepositoryMySQL implements UserRepository {
 
     @Override
     public boolean save(User user) {
+        Notification<User> findByUsernameAndPasswordNotification = new Notification<>();
         try {
+
+            if (existsByUsername(user.getUsername())){
+                System.out.println("Username exists");
+
+                findByUsernameAndPasswordNotification.addError("Username taken!");
+                return false;
+
+            }
+            //ana@are.mere
+
             PreparedStatement insertUserStatement = connection
                     .prepareStatement("INSERT INTO user values (null, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             insertUserStatement.setString(1, user.getUsername());

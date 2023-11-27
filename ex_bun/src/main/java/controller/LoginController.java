@@ -2,10 +2,13 @@ package controller;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import model.User;
 import model.validator.Notification;
 import model.validator.UserValidator;
 import service.user.AuthenticationService;
+import view.CustomerView;
 import view.LoginView;
 
 import java.util.EventListener;
@@ -38,6 +41,9 @@ public class LoginController {
                 loginView.setActionTargetText(loginNotification.getFormattedErrors());
             }else{
                 loginView.setActionTargetText("LogIn Successfull!");
+
+                switchToCustomerView();
+                //switch scenes
             }
 
         }
@@ -52,11 +58,35 @@ public class LoginController {
 
             Notification<Boolean> registerNotification = authenticationService.register(username, password);
 
+//            if (registerNotification.hasErrors()) {
+//                loginView.setActionTargetText(registerNotification.getFormattedErrors());
+//                //loginView.setActionTargetText(registerNotification.usernameTaken());
+//               //loginView.setActionTargetText("Username taken!");
+//            } else {
+//                loginView.setActionTargetText("Register successful!");
+//            }
             if (registerNotification.hasErrors()) {
-                loginView.setActionTargetText(registerNotification.getFormattedErrors());
+                String errorMessage = registerNotification.getFormattedErrors();
+                if (errorMessage.contains("Username taken!")) {
+                    loginView.setActionTargetText("Username taken!");
+                } else {
+                    loginView.setActionTargetText(errorMessage);
+                }
             } else {
                 loginView.setActionTargetText("Register successful!");
+
             }
         }
+    }
+
+    private void switchToCustomerView(){
+        Stage customerStage = new Stage();
+        CustomerView customerView = new CustomerView(customerStage);
+        new CustomerController(customerView);
+
+        //Scene customerScene = new Scene(customerView 720, 480);
+        //customerStage.setScene(customerScene);
+        customerStage.show();
+
     }
 }

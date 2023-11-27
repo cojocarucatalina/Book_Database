@@ -32,4 +32,8 @@ public class Notification<T>{
     public String getFormattedErrors(){
         return String.join("\n", errors);
     }
+
+    public String usernameTaken(){
+        return "Username taken";
+    }
 }

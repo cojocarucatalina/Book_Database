@@ -11,6 +11,8 @@ import java.util.Date;
 public class Book{
 
     private Long id;
+    private int quantity;
+    private int price;
 
     private String author;
 
@@ -50,6 +52,23 @@ public class Book{
     public void setPublishedDate(LocalDate publishedDate) {
         this.publishedDate = publishedDate;
     }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
 
     @Override
     public String toString(){

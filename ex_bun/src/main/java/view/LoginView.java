@@ -97,9 +97,12 @@ public class LoginView {
 
     public void addLoginButtonListener(EventHandler<ActionEvent> loginButtonListener) {
         logInButton.setOnAction(loginButtonListener);
+        //new scene
     }
 
     public void addRegisterButtonListener(EventHandler<ActionEvent> signInButtonListener) {
         signInButton.setOnAction(signInButtonListener);
     }
+
+
 }

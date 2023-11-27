@@ -15,6 +15,8 @@ public class SQLTableCreationFactory {
                     "  id int(11) NOT NULL AUTO_INCREMENT," +
                     "  author varchar(500) NOT NULL," +
                     "  title varchar(500) NOT NULL," +
+                    "  price float(200) NOT NULL," +
+                    "  quantity int(200) NOT NULL," +
                     "  publishedDate datetime DEFAULT NULL," +
                     "  PRIMARY KEY (id)," +
                     "  UNIQUE KEY id_UNIQUE (id)" +
