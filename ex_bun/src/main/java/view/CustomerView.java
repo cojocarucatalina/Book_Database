@@ -1,5 +1,6 @@
 package view;
 
+import controller.CustomerController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
@@ -18,42 +19,23 @@ import javafx.stage.Stage;
 import model.User;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 // ana@are.mere --> parola1/
 
 public class CustomerView {
 
-
-
-
-
-    private TableColumn<Book, Long> idColumn;
-    private TableColumn<Book, String> titleColumn;
-    private TableColumn<Book, String> authorColumn;
-    private TableColumn<Book, LocalDate> dateColumn;
-    private TableColumn<Book, Integer> priceColumn;
-    private TableColumn<Book, Integer> quantityColumn;
-
-
-
-
-
-
-
-
-
-
-    /////////////////////////F
-
     private TableView<Book> tableView;
     private Button logOutButton;
     private TableView<Book> bookTableView;
     private Button buyButton;
+    private Button finishButton;
     private Button showAllButton;
     private ObservableList<Book> booksData;
     private Stage currentStage;
     private Stage previousStage;
+    private TextArea addedToCartArea;
 
 
     public CustomerView(Stage primaryStage){
@@ -66,6 +48,9 @@ public class CustomerView {
         Scene scene = new Scene(gridPane, 720, 480);
         primaryStage.setScene(scene);
 
+        addedToCartArea = new TextArea();
+        addedToCartArea.setEditable(false);
+        addedToCartArea.setText("Added to cart: \n");
        // initializeButtons(gridPane);
         initializeCustomerView(gridPane);
 
@@ -100,19 +85,20 @@ public class CustomerView {
 
 
         bookTableView = new TableView<>();
-        idColumn = new TableColumn<>("ID");
-        titleColumn = new TableColumn<>("Title");
-        authorColumn = new TableColumn<>("Author");
-        //dateColumn = new TableColumn<>("Date");
-        priceColumn = new TableColumn<>("Price");
-        quantityColumn = new TableColumn<>("Quantity");
+        TableColumn<Book, Integer> idColumn = new TableColumn<>("ID");
+        TableColumn<Book, Integer> titleColumn = new TableColumn<>("Title");
+        TableColumn<Book, Integer> authorColumn = new TableColumn<>("Author");
+        TableColumn<Book, Integer> dateColumn = new TableColumn<>("Date");
+        TableColumn<Book, Integer> priceColumn = new TableColumn<>("Price");
+        TableColumn<Book, Integer> quantityColumn = new TableColumn<>("Quantity");
 
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         authorColumn.setCellValueFactory(new PropertyValueFactory<>("author"));
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
+        //dateColumn.setCellValueFactory(new PropertyValueFactory<>("publishedDate"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        //dateColumn.setCellValueFactory(new PropertyValueFactory<>("publishedDate"));
+
 
         //bookTableView.getColumns().addAll(idColumn, titleColumn, authorColumn, dateColumn, priceColumn, quantityColumn);
         bookTableView.getColumns().addAll(idColumn, titleColumn, authorColumn, priceColumn, quantityColumn);
@@ -122,34 +108,42 @@ public class CustomerView {
 
         logOutButton = new Button("LogOut");
         buyButton = new Button("Buy");
+        finishButton = new Button("FinishShopping");
         showAllButton = new Button("Show All Books");
 
         HBox buttonsHBox = new HBox(10);
         buttonsHBox.setAlignment(Pos.BOTTOM_CENTER);
-        buttonsHBox.getChildren().addAll(showAllButton, logOutButton, buyButton);
+        buttonsHBox.getChildren().addAll(showAllButton, logOutButton, buyButton, finishButton);
 
         gridPane.add(buttonsHBox, 0, 5, 2, 1);
 
         gridPane.add(tableViewBox, 0, 0, 2, 1);
 
-    }
+        gridPane.add(addedToCartArea, 0, 6, 2, 1);
 
+
+    }
 
         private void initializeButtons(GridPane gridPane){
 
         logOutButton = new Button("LogOut");
         buyButton = new Button("Buy");
+        finishButton = new Button("FinishShopping");
         showAllButton = new Button("Show All Books");
 
         HBox buttonsHBox = new HBox(10);
         buttonsHBox.setAlignment(Pos.BOTTOM_CENTER);
-        buttonsHBox.getChildren().addAll(showAllButton, logOutButton, buyButton);
+        buttonsHBox.getChildren().addAll(showAllButton, logOutButton, buyButton, finishButton);
 
         gridPane.add(buttonsHBox, 0, 1, 2, 1);
     }
 
     public TableView<Book> getTableView(){
         return tableView;
+    }
+
+    public void setAddedToCartArea(String addedToCart) {
+        addedToCartArea.appendText(addedToCart);
     }
 
     public Button getBuyButton(){
@@ -161,6 +155,9 @@ public class CustomerView {
 
     public Button getLogOutButton(){
         return logOutButton;
+    }
+    public Book getSelectedBook(){
+        return bookTableView.getSelectionModel().getSelectedItem();
     }
 
     public Scene createScene(){
@@ -175,6 +172,10 @@ public class CustomerView {
         buyButton.setOnAction(buyButtonHandler);
     }
 
+    public void addFinishButtonListener(EventHandler<ActionEvent> finishButtonHandler) {
+        finishButton.setOnAction(finishButtonHandler);
+    }
+
     public void addShowAllListener(EventHandler<ActionEvent> showAllHandler) {
         showAllButton.setOnAction(showAllHandler);
     }
@@ -185,6 +186,20 @@ public class CustomerView {
     }
 
     public void closeCustomerWindow() {
+        Stage stage = new Stage();
+        LoginView logInView = new LoginView(stage);
+
+//        Stage customerStage = new Stage();
+//
+//        CustomerView customerView = new CustomerView(customerStage);
+//        List<Book> selected = new ArrayList<>();
+//        CustomerController customerController = new CustomerController(customerView, bookService, selected);
+//
+//        customerStage.show();
+
+
+        previousStage = (Stage) logInView.getLogInButton().getScene().getWindow();
+        previousStage.show();
         currentStage = (Stage) logOutButton.getScene().getWindow();
         currentStage.close();
         //javafx.application.Platform.exit();

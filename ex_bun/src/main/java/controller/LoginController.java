@@ -14,6 +14,7 @@ import service.user.AuthenticationService;
 import view.CustomerView;
 import view.LoginView;
 
+import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.List;
 
@@ -40,9 +41,9 @@ public class LoginController {
         @Override
         public void handle(javafx.event.ActionEvent event) {
             String username = loginView.getUsername();
-            username = "ana@are.mere";
+            //username = "ana@are.mere";
             String password = loginView.getPassword();
-            password="parola1/";
+            //password="parola1/";
 
             Notification<User> loginNotification = authenticationService.login(username, password);
 
@@ -95,7 +96,8 @@ public class LoginController {
         Stage customerStage = new Stage();
 
         CustomerView customerView = new CustomerView(customerStage);
-        CustomerController customerController = new CustomerController(customerView, bookService);
+        List<Book> selected = new ArrayList<>();
+        CustomerController customerController = new CustomerController(customerView, bookService, selected);
 
         customerStage.show();
 
