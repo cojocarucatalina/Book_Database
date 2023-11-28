@@ -16,7 +16,6 @@ import view.CustomerView;
 import view.LoginView;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,7 +55,14 @@ public class CustomerController {
 
             Book selectedBook = customerView.getSelectedBook();
             addedToCartBooks.add(selectedBook);
-            int count = Collections.frequency(addedToCartBooks,selectedBook);
+
+            int count =0;
+            for (Book b : addedToCartBooks){
+                if (b.getTitle().equals(selectedBook.getTitle()))
+                    count++;
+            }
+            //int count = Collections.frequency(addedToCartBooks,selectedBook);
+            System.out.println("aici "+ count);
             if (count > selectedBook.getQuantity()){
                 customerView.setAddedToCartArea(selectedBook.getTitle() + "   - is unavailable\n");
             }

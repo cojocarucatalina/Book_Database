@@ -7,6 +7,7 @@ package model;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.Objects;
 
 public class Book{
 
@@ -69,6 +70,7 @@ public class Book{
     public void oneBookBought(){
         this.quantity--;
     }
+
 
     @Override
     public String toString(){
