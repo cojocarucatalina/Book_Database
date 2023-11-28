@@ -25,6 +25,7 @@ public class LoginView {
     private Button signInButton;
     private Button logInButton;
     private Text actiontarget;
+    private Stage previousStage;
 
     public LoginView(Stage primaryStage) {
         primaryStage.setTitle("Book Store");
@@ -50,8 +51,8 @@ public class LoginView {
     }
 
     private void initializeSceneTitle(GridPane gridPane){
-        Text sceneTitle = new Text("Welcome to our Book Store");
-        sceneTitle.setFont(Font.font("Tahome", FontWeight.NORMAL, 20));
+        Text sceneTitle = new Text("Welcome to my Book Store <3");
+        sceneTitle.setFont(Font.font("Tahome", FontWeight.EXTRA_BOLD, 20));
         gridPane.add(sceneTitle, 0, 0, 2, 1);
     }
 
@@ -99,10 +100,26 @@ public class LoginView {
         logInButton.setOnAction(loginButtonListener);
         //new scene
     }
+    public Button getLogInButton(){
+        return logInButton;
+    }
+
 
     public void addRegisterButtonListener(EventHandler<ActionEvent> signInButtonListener) {
         signInButton.setOnAction(signInButtonListener);
     }
 
+    public void closeLogInView() {
+        previousStage = (Stage) logInButton.getScene().getWindow();
+        previousStage.close();
+    }
 
+    public void logOut(){
+        previousStage.show();
+    }
+
+    public Stage saveLogInWindow() {
+        previousStage = (Stage) logInButton.getScene().getWindow();
+        return previousStage;
+    }
 }

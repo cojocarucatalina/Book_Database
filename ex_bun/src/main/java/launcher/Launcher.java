@@ -11,6 +11,6 @@ public class Launcher extends Application {
     // Iterative Programming
     @Override
     public void start(Stage primaryStage) throws Exception {
-        ComponentFactory componentFactory = ComponentFactory.getInstance(false, primaryStage);
+        ComponentFactory componentFactory = ComponentFactory.getInstance(true, primaryStage);
     }
 }

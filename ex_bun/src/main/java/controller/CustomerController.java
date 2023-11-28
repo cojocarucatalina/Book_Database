@@ -1,36 +1,41 @@
 package controller;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import launcher.Launcher;
 import model.Book;
 import service.book.BookService;
+import service.user.AuthenticationService;
 import view.CustomerView;
+import view.LoginView;
 
 import java.util.List;
 
 public class CustomerController {
 
     private final CustomerView customerView;
-    private final ObservableList<String> data;
-    private BookService bookService;
+    private final BookService bookService;
 
-    public CustomerController(CustomerView customerView) {
+    public CustomerController(CustomerView customerView, BookService bookService) {
         this.customerView = customerView;
-        this.data = FXCollections.observableArrayList();
+        this.bookService = bookService;
 
-        initialize();
-        customerView.getLogOutButton().setOnAction(new LogOutHandler());
-        customerView.getBuyButton().setOnAction(new BuyButtonHandler());
+        this.customerView.addLogOutButtonListener(new LogOutHandler());
+        this.customerView.addBuyButtonListener(new BuyButtonHandler());
+        this.customerView.addShowAllListener(new ShowAllHandler());
     }
 
     private class LogOutHandler implements EventHandler<ActionEvent> {
+
         @Override
         public void handle(ActionEvent event) {
-
+            //loginView.logOut();
+            customerView.closeCustomerWindow();
         }
     }
 
@@ -38,21 +43,23 @@ public class CustomerController {
         @Override
         public void handle(ActionEvent event) {
 
+            System.out.println("Added to cart!");
+
         }
     }
 
-    public void displayBooks() {
-        List<Book> books = bookService.findAll();
-        data.clear();
-        for (Book book : books) {
-            data.add(book.getTitle() + " by " + book.getAuthor() +
-                    ", Price: " + book.getPrice() + " RON, Quantity: " + book.getQuantity());
+    private class ShowAllHandler implements EventHandler<ActionEvent> {
+
+        private List<Book> books;
+        @Override
+        public void handle(ActionEvent event) {
+            books = bookService.findAll();
+            System.out.println(books);
+            customerView.setBooksData(books);
+
         }
-
-        customerView.getTableView().setItems(data);
     }
 
-    private void initialize(){
-        customerView.getTableView().setItems(data);
-    }
+
+
 }
