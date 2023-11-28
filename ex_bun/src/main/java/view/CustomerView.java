@@ -1,12 +1,16 @@
 package view;
 
 import controller.CustomerController;
+import controller.LoginController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import launcher.ComponentFactory;
 import model.Book;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,6 +21,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import model.User;
+import repository.book.BookRepositoryMySQL;
+import repository.security.RightsRolesRepository;
+import repository.user.UserRepository;
+import service.book.BookService;
+import service.book.BookServiceImpl;
+import service.user.AuthenticationService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -25,6 +35,15 @@ import java.util.List;
 // ana@are.mere --> parola1/
 
 public class CustomerView {
+
+
+    private LoginView loginView;
+    //private final CustomerView customerView;
+    private LoginController loginController;
+    private AuthenticationService authenticationService;
+
+    private BookService bookService;
+    private static ComponentFactory instance;
 
     private TableView<Book> tableView;
     private Button logOutButton;
@@ -36,6 +55,9 @@ public class CustomerView {
     private Stage currentStage;
     private Stage previousStage;
     private TextArea addedToCartArea;
+    private TextArea totalArea;
+    private Label totalLabel;
+    Label addedToCartLabel;
 
 
     public CustomerView(Stage primaryStage){
@@ -45,12 +67,21 @@ public class CustomerView {
         GridPane gridPane = new GridPane();
         initializeGridPane(gridPane);
 
-        Scene scene = new Scene(gridPane, 720, 480);
+        Scene scene = new Scene(gridPane, 800, 700);
         primaryStage.setScene(scene);
 
         addedToCartArea = new TextArea();
         addedToCartArea.setEditable(false);
-        addedToCartArea.setText("Added to cart: \n");
+        totalArea = new TextArea();
+        totalArea.setEditable(false);
+        totalArea.setText("");
+        totalArea.setPrefWidth(100);
+        totalArea.setPrefHeight(200);
+        addedToCartLabel = new Label("YOUR CART: \n");
+        addedToCartLabel.setFont(Font.font("Tahome", FontWeight.EXTRA_BOLD, 10));
+        totalLabel = new Label("YOUR TOTAL IS: ");
+        totalLabel.setFont(Font.font("Tahome", FontWeight.EXTRA_BOLD, 10));
+        addedToCartArea.setText("");
        // initializeButtons(gridPane);
         initializeCustomerView(gridPane);
 
@@ -86,8 +117,8 @@ public class CustomerView {
 
         bookTableView = new TableView<>();
         TableColumn<Book, Integer> idColumn = new TableColumn<>("ID");
-        TableColumn<Book, Integer> titleColumn = new TableColumn<>("Title");
         TableColumn<Book, Integer> authorColumn = new TableColumn<>("Author");
+        TableColumn<Book, Integer> titleColumn = new TableColumn<>("Title");
         TableColumn<Book, Integer> dateColumn = new TableColumn<>("Date");
         TableColumn<Book, Integer> priceColumn = new TableColumn<>("Price");
         TableColumn<Book, Integer> quantityColumn = new TableColumn<>("Quantity");
@@ -95,13 +126,12 @@ public class CustomerView {
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         authorColumn.setCellValueFactory(new PropertyValueFactory<>("author"));
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
-        //dateColumn.setCellValueFactory(new PropertyValueFactory<>("publishedDate"));
+        dateColumn.setCellValueFactory(new PropertyValueFactory<>("publishedDate"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
 
-
-        //bookTableView.getColumns().addAll(idColumn, titleColumn, authorColumn, dateColumn, priceColumn, quantityColumn);
-        bookTableView.getColumns().addAll(idColumn, titleColumn, authorColumn, priceColumn, quantityColumn);
+        bookTableView.getColumns().addAll(idColumn, titleColumn, authorColumn, dateColumn, priceColumn, quantityColumn);
+        //bookTableView.getColumns().addAll(idColumn, titleColumn, authorColumn, priceColumn, quantityColumn);
 
         VBox tableViewBox = new VBox(10);
         tableViewBox.getChildren().add(bookTableView);
@@ -119,7 +149,10 @@ public class CustomerView {
 
         gridPane.add(tableViewBox, 0, 0, 2, 1);
 
-        gridPane.add(addedToCartArea, 0, 6, 2, 1);
+        gridPane.add(addedToCartArea, 0, 7, 2, 1);
+        gridPane.add(addedToCartLabel, 0, 6, 2, 1);
+        gridPane.add(totalLabel, 0, 8, 2, 1);
+        gridPane.add(totalArea, 0, 9, 2, 1);
 
 
     }
@@ -144,6 +177,9 @@ public class CustomerView {
 
     public void setAddedToCartArea(String addedToCart) {
         addedToCartArea.appendText(addedToCart);
+    }
+    public void setTotalArea(String addedToCart) {
+        totalArea.appendText(addedToCart);
     }
 
     public Button getBuyButton(){
@@ -189,19 +225,19 @@ public class CustomerView {
         Stage stage = new Stage();
         LoginView logInView = new LoginView(stage);
 
-//        Stage customerStage = new Stage();
-//
-//        CustomerView customerView = new CustomerView(customerStage);
-//        List<Book> selected = new ArrayList<>();
-//        CustomerController customerController = new CustomerController(customerView, bookService, selected);
-//
-//        customerStage.show();
 
-
+        loginController = new LoginController(loginView, authenticationService, bookService);
         previousStage = (Stage) logInView.getLogInButton().getScene().getWindow();
         previousStage.show();
+        ComponentFactory componentFactory = ComponentFactory.getInstance(true, stage);
+
         currentStage = (Stage) logOutButton.getScene().getWindow();
         currentStage.close();
         //javafx.application.Platform.exit();
+    }
+
+    public void closeCustomerWindowForFinishShopping() {
+        currentStage = (Stage) logOutButton.getScene().getWindow();
+        currentStage.close();
     }
 }

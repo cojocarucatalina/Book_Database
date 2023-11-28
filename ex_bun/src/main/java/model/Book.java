@@ -7,6 +7,7 @@ package model;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.Objects;
 
 public class Book{
 
@@ -14,8 +15,8 @@ public class Book{
     private String author;
     private String title;
     private LocalDate publishedDate;
+    private float price;
     private int quantity;
-    private int price;
 
 
     public Long getId() {
@@ -54,7 +55,7 @@ public class Book{
         this.quantity = quantity;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(float price) {
         this.price = price;
     }
 
@@ -62,8 +63,12 @@ public class Book{
         return quantity;
     }
 
-    public int getPrice() {
+    public float getPrice() {
         return price;
+    }
+
+    public void oneBookBought(){
+        this.quantity--;
     }
 
 
