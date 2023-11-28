@@ -11,14 +11,11 @@ import java.util.Date;
 public class Book{
 
     private Long id;
+    private String author;
+    private String title;
+    private LocalDate publishedDate;
     private int quantity;
     private int price;
-
-    private String author;
-
-    private String title;
-
-    private LocalDate publishedDate;
 
 
     public Long getId() {
