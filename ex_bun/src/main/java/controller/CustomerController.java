@@ -25,6 +25,8 @@ public class CustomerController {
     private final CustomerView customerView;
     private final BookService bookService;
     private final List<Book> selectedBooks;
+    private int finishCounter =0;
+    List<Book> addedToCartBooks = new ArrayList<>();
 
     public CustomerController(CustomerView customerView, BookService bookService, List<Book> selectedBooks) {
         this.selectedBooks = selectedBooks;
@@ -47,8 +49,8 @@ public class CustomerController {
     }
 
     private class BuyButtonHandler implements EventHandler<ActionEvent> {
+        private List<Book> books;
 
-        List<Book> addedToCartBooks = new ArrayList<>();
         @Override
         public void handle(ActionEvent event) {
 
@@ -60,17 +62,24 @@ public class CustomerController {
             }
             else{
 
+                // update quantity
+                for (Book e : addedToCartBooks){
+                    int quantity = e.getQuantity();
+                    if (quantity > 1) {
+                    bookService.updateDatabase(e.getId(),quantity -1, e.getTitle());
+                    }
+                }
+
+                List<Book> books = bookService.findAll();
+                customerView.setBooksData(books);
+
                 System.out.println("Added to cart: "+ selectedBook.getTitle());
                 customerView.setAddedToCartArea(selectedBook.getTitle()+", quantity: "+ count +"\n" );
 
             }
 
-
-
             int quantityOfSelectedBook = selectedBook.getQuantity();
             System.out.println("Quantity is : "+quantityOfSelectedBook);
-
-
 
         }
     }
@@ -88,16 +97,31 @@ public class CustomerController {
     }
 
     private class FinishButtonHandler implements EventHandler<ActionEvent> {
+        private List<Book> books;
         @Override
         public void handle(ActionEvent event) {
+            if (finishCounter %2 !=1){
+                float total = 0;
 
-            System.out.println("Shopping is done!");
-            // TO DO: SCADE CANTITATEA CARTILOR
-            customerView.closeCustomerWindow();
+                for (Book e : addedToCartBooks){
+                    total += e.getPrice();
+                }
 
+                List<Book> books = bookService.findAll();
+                customerView.setBooksData(books);
+
+                customerView.setTotalArea(total +" RON\n");
+                customerView.setTotalArea("\npress the FinishShopping button again to confirm");
+                customerView.setTotalArea("\nHAVE A NICE DAY!");
+            }
+            else {
+
+                System.out.println("Shopping is done!");
+                customerView.closeCustomerWindowForFinishShopping();
+            }
+            finishCounter++;
         }
     }
-
 
 
 }

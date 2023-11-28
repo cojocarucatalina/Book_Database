@@ -59,6 +59,25 @@ public class BookRepositoryMySQL implements BookRepository{
         return book;
     }
 
+    public boolean updateDatabase(Long id, int quantity, String title) {
+        String updateSql = "UPDATE book SET quantity = ?, title = ? WHERE id = ?";
+
+        try {
+            PreparedStatement updateStatement = connection.prepareStatement(updateSql);
+            updateStatement.setInt(1, quantity);
+            updateStatement.setString(2, title);
+            updateStatement.setLong(3, id);
+
+            int rowsUpdated = updateStatement.executeUpdate();
+            return (rowsUpdated != 1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+
     /**
      *
      * How to reproduce a sql injection attack on insert statement
@@ -78,7 +97,7 @@ public class BookRepositoryMySQL implements BookRepository{
 
     @Override
     public boolean save(Book book) {
-        String sql = "INSERT INTO book VALUES(null, ?, ?, ?);";
+        String sql = "INSERT INTO book VALUES(null, ?, ?, ?, ?, ?);";
 
         String newSql = "INSERT INTO book VALUES(null, \'" + book.getAuthor() +"\', \'"+ book.getTitle()+"\', null );";
 
@@ -92,7 +111,8 @@ public class BookRepositoryMySQL implements BookRepository{
             preparedStatement.setString(1, book.getAuthor());
             preparedStatement.setString(2, book.getTitle());
             preparedStatement.setDate(3, java.sql.Date.valueOf(book.getPublishedDate()));
-
+            preparedStatement.setFloat(4, book.getPrice());
+            preparedStatement.setInt(5, book.getQuantity());
             int rowsInserted = preparedStatement.executeUpdate();
 
             return (rowsInserted != 1) ? false : true;
@@ -122,6 +142,8 @@ public class BookRepositoryMySQL implements BookRepository{
                 .setTitle(resultSet.getString("title"))
                 .setAuthor(resultSet.getString("author"))
                 .setPublishedDate(new java.sql.Date(resultSet.getDate("publishedDate").getTime()).toLocalDate())
+                .setPrice(resultSet.getInt("price"))
+                .setQuantity(resultSet.getInt("quantity"))
                 .build();
     }
 }
