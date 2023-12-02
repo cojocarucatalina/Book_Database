@@ -1,5 +1,6 @@
 package service.user;
 
+import model.Book;
 import model.Role;
 import model.User;
 import model.builder.UserBuilder;
@@ -11,6 +12,7 @@ import repository.user.UserRepository;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Collections;
+import java.util.List;
 
 import static database.Constants.Roles.CUSTOMER;
 
@@ -22,6 +24,11 @@ public class AuthenticationServiceMySQL implements AuthenticationService {
     public AuthenticationServiceMySQL(UserRepository userRepository, RightsRolesRepository rightsRolesRepository) {
         this.userRepository = userRepository;
         this.rightsRolesRepository = rightsRolesRepository;
+    }
+
+    @Override
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 
     @Override

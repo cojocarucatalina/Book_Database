@@ -80,8 +80,7 @@ public class CustomerController {
                 customerView.setBooksData(books);
 
                 System.out.println("Added to cart: "+ selectedBook.getTitle());
-                customerView.setAddedToCartArea(selectedBook.getTitle()+", quantity: "+ count +"\n" );
-
+                customerView.setAddedToCartArea(selectedBook.getTitle() + ", quantity: " + count + "\n");
             }
 
             int quantityOfSelectedBook = selectedBook.getQuantity();

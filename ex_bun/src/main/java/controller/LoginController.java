@@ -8,9 +8,11 @@ import javafx.stage.Stage;
 import model.Book;
 import model.User;
 import model.validator.Notification;
+import model.validator.ResultFetchException;
 import model.validator.UserValidator;
 import service.book.BookService;
 import service.user.AuthenticationService;
+import view.AdminView;
 import view.CustomerView;
 import view.LoginView;
 
@@ -41,11 +43,17 @@ public class LoginController {
         @Override
         public void handle(javafx.event.ActionEvent event) {
             String username = loginView.getUsername();
+            username = "admin@admin";
             String password = loginView.getPassword();
+            password = "suntadmin1/";
 
             Notification<User> loginNotification = authenticationService.login(username, password);
 
+            try{
             User user = loginNotification.getResult();
+            } catch (ResultFetchException e){
+                loginView.setActionTargetText("Authentification not successful!");
+            }
 
             if (loginNotification.hasErrors()){
                 loginView.setActionTargetText(loginNotification.getFormattedErrors());
@@ -53,9 +61,22 @@ public class LoginController {
 
                 loginView.setActionTargetText("LogIn Successfull!");
                 if (loginNotification.getResult().getRoles().get(0).getRole().equals("customer")) {
+                    System.out.println(loginNotification.getResult().getRoles().get(0).getRole());
                     loginView.closeLogInView();
                     switchToCustomerView();
+                } else if (loginNotification.getResult().getRoles().get(0).getRole().equals("administrator"))  {
+                    loginView.closeLogInView();
+                    System.out.println(loginNotification.getResult().getRoles().get(0).getRole());
+                    System.out.println("administrator");
+                    switchToAdminView();
                 }
+                else {
+                    loginView.closeLogInView();
+                    System.out.println(loginNotification.getResult().getRoles().get(0).getRole());
+                    System.out.println("employee");
+                    switchToEmployeeView();
+                }
+
             }
 
         }
@@ -98,6 +119,28 @@ public class LoginController {
         CustomerController customerController = new CustomerController(customerView, bookService, selected);
 
         customerStage.show();
+
+    }
+
+    private void switchToAdminView(){
+        Stage adminStage = new Stage();
+
+        AdminView adminView = new AdminView(adminStage);
+        List<User> selected = new ArrayList<>();
+        AdminController adminController = new AdminController(adminView, authenticationService, selected);
+
+        adminStage.show();
+
+    }
+
+    private void switchToEmployeeView(){
+        Stage adminStage = new Stage();
+
+        AdminView adminView = new AdminView(adminStage);
+        List<User> selected = new ArrayList<>();
+        AdminController adminController = new AdminController(adminView, authenticationService, selected);
+
+        adminStage.show();
 
     }
 }
