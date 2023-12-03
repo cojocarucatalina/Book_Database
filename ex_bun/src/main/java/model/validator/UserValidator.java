@@ -25,8 +25,16 @@ public class UserValidator {
         return errors.isEmpty();
     }
 
+    public boolean validateEmployee() {
+        validateUsername(user.getUsername());
+        //validatePassword(user.getPassword());
+
+        return errors.isEmpty();
+    }
+
     private void validateUsername(String username){
         if (!Pattern.compile(EMAIL_VALIDATION_REGEX).matcher(username).matches()){
+            System.out.println(username);
             errors.add("Email is not valid!");
         }
     }

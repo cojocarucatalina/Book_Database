@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface AuthenticationService {
     Notification<Boolean> register(String username, String password);
+    public Notification<Boolean> registerEmployee(String username, String password);
     List<User> findAll();
 
     Notification<User> login(String username, String password);

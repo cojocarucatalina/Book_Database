@@ -2,7 +2,6 @@ package view;
 
 //admin@admin --> suntadmin1/
 
-import controller.LoginController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -15,14 +14,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import launcher.ComponentFactory;
-import model.Book;
 import model.User;
-import service.book.BookService;
-import service.user.AuthenticationService;
 
 import java.util.List;
 
@@ -30,6 +27,7 @@ public class AdminView {
 
     private Button logOutButton;
     private TableView<User> userTableView;
+    private Text actiontarget;
     private Button retrieveButton;
     private Button deleteButton;
     private Button createButton;
@@ -38,7 +36,7 @@ public class AdminView {
     private ObservableList<User> userData;
     private Stage currentStage;
     private Stage previousStage;
-    private Label newUsername;
+    private Label usernameText;
     private TextArea usernameArea;
 
     public AdminView(Stage primaryStage){
@@ -48,17 +46,20 @@ public class AdminView {
         GridPane gridPane = new GridPane();
         initializeGridPane(gridPane);
 
-        newUsername = new Label("username to add or update:");
-        newUsername.setFont(Font.font("Tahome", FontWeight.EXTRA_BOLD, 10));
-        usernameArea = new TextArea();
-        usernameArea.setEditable(true);
+        usernameText = new Label("username to add or update:");
+        usernameText.setFont(Font.font("Tahome", FontWeight.EXTRA_BOLD, 10));
 
         usernameArea = new TextArea();
         usernameArea.setEditable(true);
+
         usernameArea.setPrefSize(200, 20);  // Set the preferred width and height
         usernameArea.setMaxHeight(50);
         usernameArea.setWrapText(true);
         //usernameArea.setPrefSize(10, 50);
+
+
+        actiontarget = new Text();
+        actiontarget.setFill(Color.FIREBRICK);
 
         Scene scene = new Scene(gridPane, 750, 500);
         primaryStage.setScene(scene);
@@ -112,12 +113,14 @@ public class AdminView {
         buttonsShowAll.setAlignment(Pos.BOTTOM_CENTER);
         buttonsShowAll.getChildren().addAll(showAllButton, logOutButton);
 
-        gridPane.add(newUsername,3,0,1,1);
+        gridPane.add(usernameText,3,0,1,1);
         gridPane.add(usernameArea,3,1,1,1);
         gridPane.add(buttonsCreate, 3, 2, 1, 1);
 
         gridPane.add(buttonsShowAll, 1, 1, 1, 1);
         gridPane.add(buttonsDelete, 1, 5, 1, 1);
+
+        gridPane.add(actiontarget, 3, 6);
 
         gridPane.add(tableViewBox, 1, 2, 1, 2);
 
@@ -157,6 +160,15 @@ public class AdminView {
     }
 
     public void closeAdminWindow() {
-        //??
+        currentStage = (Stage) logOutButton.getScene().getWindow();
+        currentStage.close();
     }
+
+    public String getUsername() {
+
+        System.out.println(usernameArea.getText());
+        return usernameArea.getText();
+    }
+
+    public void setActionTargetText(String text){ this.actiontarget.setText(text);}
 }

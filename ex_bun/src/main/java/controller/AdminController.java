@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import model.Book;
 import model.User;
+import model.validator.Notification;
 import service.book.BookService;
 import service.user.AuthenticationService;
 import view.AdminView;
@@ -29,9 +30,10 @@ public class AdminController {
         this.adminView = adminView;
         this.authenticationService = authenticationService;
 
-//        this.adminView.addLogOutButtonListener(new AdminController.LogOutHandler());
-//        this.adminView.addCreateButtonListener(new AdminController.CreateButtonHandler());
-//        this.adminView.addFinishButtonListener(new AdminController.FinishButtonHandler());
+        this.adminView.addLogOutButtonListener(new AdminController.LogOutHandler());
+        this.adminView.addCreateButtonListener(new AdminController.CreateButtonHandler());
+        this.adminView.addUpdateButtonListener(new AdminController.UpdateButtonHandler());
+        this.adminView.addDeleteButtonListener(new AdminController.DeleteButtonHandler());
         this.adminView.addShowAllListener(new AdminController.ShowAllHandler());
     }
 
@@ -52,6 +54,40 @@ public class AdminController {
             users = authenticationService.findAll();
             System.out.println(users);
             adminView.setUsersData(users);
+
+        }
+    }
+
+    public class DeleteButtonHandler implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+        }
+    }
+
+    public class CreateButtonHandler implements EventHandler<ActionEvent> {
+
+        String password = "defaultpass1/";
+        @Override
+        public void handle(ActionEvent event) {
+
+            String username = adminView.getUsername();
+            System.out.println(username);
+            Notification<Boolean> registerNotification = authenticationService.registerEmployee(username, password);
+
+            if (registerNotification.hasErrors()) {
+                adminView.setActionTargetText(registerNotification.getFormattedErrors());
+            } else {
+                adminView.setActionTargetText("Register successful!");
+            }
+        }
+    }
+
+    public class UpdateButtonHandler implements EventHandler<ActionEvent> {
+
+        String username = adminView.getUsername();
+        @Override
+        public void handle(ActionEvent event) {
+
 
         }
     }

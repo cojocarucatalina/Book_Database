@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static database.Constants.Roles.CUSTOMER;
+import static database.Constants.Roles.EMPLOYEE;
 
 public class AuthenticationServiceMySQL implements AuthenticationService {
 
@@ -45,6 +46,33 @@ public class AuthenticationServiceMySQL implements AuthenticationService {
         UserValidator userValidator = new UserValidator(user);
 
         boolean userValid = userValidator.validate();
+        Notification<Boolean> userRegisterNotification = new Notification<>();
+
+        if (!userValid){
+            userValidator.getErrors().forEach(userRegisterNotification::addError);
+            userRegisterNotification.setResult(Boolean.FALSE);
+        } else {
+            user.setPassword(hashPassword(password));
+            userRegisterNotification.setResult(userRepository.save(user));
+        }
+
+        return userRegisterNotification;
+    }
+
+    @Override
+    public Notification<Boolean> registerEmployee(String username, String password) {
+
+        Role customerRole = rightsRolesRepository.findRoleByTitle(EMPLOYEE);
+
+        User user = new UserBuilder()
+                .setUsername(username)
+                .setPassword(password)
+                .setRoles(Collections.singletonList(customerRole))
+                .build();
+
+        UserValidator userValidator = new UserValidator(user);
+
+        boolean userValid = userValidator.validateEmployee();
         Notification<Boolean> userRegisterNotification = new Notification<>();
 
         if (!userValid){
