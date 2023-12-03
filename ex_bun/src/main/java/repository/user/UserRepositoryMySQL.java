@@ -84,6 +84,7 @@ public class UserRepositoryMySQL implements UserRepository {
     public Notification<User> findByUsernameAndPassword(String username, String password) {
 
         Notification<User> findByUsernameAndPasswordNotification = new Notification<>();
+
         try {
             Statement statement = connection.createStatement();
 
@@ -115,15 +116,16 @@ public class UserRepositoryMySQL implements UserRepository {
     @Override
     public boolean save(User user) {
         Notification<User> findByUsernameAndPasswordNotification = new Notification<>();
+
+        if (existsByUsername(user.getUsername())){
+            System.out.println("Username exists");
+            findByUsernameAndPassword("","");
+            findByUsernameAndPasswordNotification.addError("Username taken!");
+
+            //findByUsernameAndPasswordNotification.addError("Username taken!");
+            return false;
+        }
         try {
-
-            if (existsByUsername(user.getUsername())){
-                System.out.println("Username exists");
-
-                findByUsernameAndPasswordNotification.addError("Username taken!");
-                return false;
-
-            }
             //ana@are.mere
 
             PreparedStatement insertUserStatement = connection

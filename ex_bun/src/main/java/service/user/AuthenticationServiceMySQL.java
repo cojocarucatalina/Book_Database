@@ -87,6 +87,11 @@ public class AuthenticationServiceMySQL implements AuthenticationService {
     }
 
     @Override
+    public Notification<Boolean> updateEmployee(String username, String password) {
+        return null;
+    }
+
+    @Override
     public Notification<User> login(String username, String password) {
         return userRepository.findByUsernameAndPassword(username, hashPassword(password));
     }

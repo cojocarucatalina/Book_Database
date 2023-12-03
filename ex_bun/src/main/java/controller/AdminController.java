@@ -70,14 +70,28 @@ public class AdminController {
         @Override
         public void handle(ActionEvent event) {
 
+            List<User> users;
+            users = authenticationService.findAll();
+
             String username = adminView.getUsername();
             System.out.println(username);
             Notification<Boolean> registerNotification = authenticationService.registerEmployee(username, password);
-
+            int verification = 0;
+            for (User element : users){
+                if (element.getUsername().equals(username)) {
+                    System.out.println(element.getUsername());
+                    System.out.println(username);
+                    adminView.setActionTargetText("Username taken!");
+                    verification = 1;
+                }
+            }
             if (registerNotification.hasErrors()) {
                 adminView.setActionTargetText(registerNotification.getFormattedErrors());
+                //if (registerNotification.getFormattedErrors())
             } else {
-                adminView.setActionTargetText("Register successful!");
+                if(verification == 0) {
+                    adminView.setActionTargetText("Register successful!");
+                }
             }
         }
     }
