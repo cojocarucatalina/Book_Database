@@ -1,5 +1,6 @@
 package repository.user;
 import model.Book;
+import model.Role;
 import model.User;
 import model.builder.BookBuilder;
 import model.builder.UserBuilder;
@@ -49,14 +50,36 @@ public class UserRepositoryMySQL implements UserRepository {
         return users;
     }
 
-    public boolean updateDatabase(Long id, int quantity, String title) {
-        String updateSql = "UPDATE book SET quantity = ?, title = ? WHERE id = ?";
+    @Override
+    public List<Role> findAllRoles() {
+        String sql = "SELECT * FROM user_role;";
+
+        List<Role> users = new ArrayList<>();
+
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next()){
+                //users.add(getUserFromResultSet(resultSet));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return users;
+    }
+
+
+    public boolean updateDatabase(Long id, String username, String password) {
+        String updateSql = "UPDATE user SET password = ? WHERE id = ?";
 
         try {
             PreparedStatement updateStatement = connection.prepareStatement(updateSql);
-            updateStatement.setInt(1, quantity);
-            updateStatement.setString(2, title);
-            updateStatement.setLong(3, id);
+            //updateStatement.setInt(1, quantity);
+            updateStatement.setString(1, password);
+            updateStatement.setLong(2, id);
 
             int rowsUpdated = updateStatement.executeUpdate();
             return (rowsUpdated != 1);
@@ -159,6 +182,21 @@ public class UserRepositoryMySQL implements UserRepository {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void remove(Long id) {
+        try {
+            String sql = "DELETE FROM user WHERE id = ?";
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setLong(1, id);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public boolean existsByUsername(String email) {

@@ -41,7 +41,7 @@ public class ComponentFactory {
         Connection connection = DatabaseConnectionFactory.getConnectionWrapper(componentsForTests).getConnection();
         this.rightsRolesRepository = new RightsRolesRepositoryMySQL(connection);
         this.userRepository = new UserRepositoryMySQL(connection, rightsRolesRepository);
-        this.authenticationService = new AuthenticationServiceMySQL(userRepository, rightsRolesRepository);
+        this.authenticationService = new AuthenticationServiceMySQL(userRepository, rightsRolesRepository, connection);
         this.loginView = new LoginView(stage);
         //this.customerView = new CustomerView(stage);
         this.bookRepository = new BookRepositoryMySQL(connection);

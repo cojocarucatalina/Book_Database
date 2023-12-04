@@ -1,6 +1,5 @@
 package service.user;
 
-import model.Book;
 import model.Role;
 import model.User;
 import model.builder.UserBuilder;
@@ -11,6 +10,9 @@ import repository.user.UserRepository;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,15 +23,25 @@ public class AuthenticationServiceMySQL implements AuthenticationService {
 
     private final UserRepository userRepository;
     private final RightsRolesRepository rightsRolesRepository;
+    private final Connection connection;
 
-    public AuthenticationServiceMySQL(UserRepository userRepository, RightsRolesRepository rightsRolesRepository) {
+
+    public AuthenticationServiceMySQL(UserRepository userRepository, RightsRolesRepository rightsRolesRepository, Connection connection) {
         this.userRepository = userRepository;
         this.rightsRolesRepository = rightsRolesRepository;
+        this.connection = connection;
     }
 
     @Override
     public List<User> findAll() {
         return userRepository.findAll();
+    }
+    public List<Role> findAllRoles(){
+        return userRepository.findAllRoles();
+    }
+
+    public void remove(Long id){
+        userRepository.remove(id);
     }
 
     @Override
@@ -87,8 +99,20 @@ public class AuthenticationServiceMySQL implements AuthenticationService {
     }
 
     @Override
-    public Notification<Boolean> updateEmployee(String username, String password) {
-        return null;
+    public boolean updateEmployee(String username, String password) {
+        String updateSql = "UPDATE user SET password = ? WHERE username = ?";
+
+        try {
+            PreparedStatement updateStatement = connection.prepareStatement(updateSql);
+            updateStatement.setString(1, hashPassword(password));
+            updateStatement.setString(2, username);
+
+            int rowsUpdated = updateStatement.executeUpdate();
+            return (rowsUpdated != 1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
@@ -97,9 +121,10 @@ public class AuthenticationServiceMySQL implements AuthenticationService {
     }
 
     @Override
-    public boolean logout(User user) {
-        return false;
+    public boolean updateDatabase(Long id, String username, String password) {
+        return userRepository.updateDatabase(id, username, hashPassword(password));
     }
+
 
     private String hashPassword(String password) {
         try {

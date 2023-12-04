@@ -19,6 +19,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import model.Book;
 import model.User;
 
 import java.util.List;
@@ -38,6 +39,7 @@ public class AdminView {
     private Stage previousStage;
     private Label usernameText;
     private TextArea usernameArea;
+    private PasswordField passwordArea;
 
     public AdminView(Stage primaryStage){
 
@@ -46,14 +48,18 @@ public class AdminView {
         GridPane gridPane = new GridPane();
         initializeGridPane(gridPane);
 
-        usernameText = new Label("username to add or update:");
+        usernameText = new Label("username and password to add or update:");
         usernameText.setFont(Font.font("Tahome", FontWeight.EXTRA_BOLD, 10));
 
         usernameArea = new TextArea();
+        passwordArea = new PasswordField();
         usernameArea.setEditable(true);
+        passwordArea.setEditable(true);
 
         usernameArea.setPrefSize(200, 20);  // Set the preferred width and height
+        passwordArea.setPrefSize(200, 20);  // Set the preferred width and height
         usernameArea.setMaxHeight(50);
+        passwordArea.setMaxHeight(50);
         usernameArea.setWrapText(true);
         //usernameArea.setPrefSize(10, 50);
 
@@ -115,10 +121,11 @@ public class AdminView {
 
         gridPane.add(usernameText,3,0,1,1);
         gridPane.add(usernameArea,3,1,1,1);
-        gridPane.add(buttonsCreate, 3, 2, 1, 1);
+        gridPane.add(passwordArea,3,2,1,1);
+        gridPane.add(buttonsCreate, 3, 3, 1, 1);
 
         gridPane.add(buttonsShowAll, 1, 1, 1, 1);
-        gridPane.add(buttonsDelete, 1, 5, 1, 1);
+        gridPane.add(buttonsDelete, 1, 6, 1, 1);
 
         gridPane.add(actiontarget, 3, 6);
 
@@ -159,6 +166,10 @@ public class AdminView {
         userTableView.setItems(userData);
     }
 
+    public User getSelectedUser(){
+        return userTableView.getSelectionModel().getSelectedItem();
+    }
+
     public void closeAdminWindow() {
         currentStage = (Stage) logOutButton.getScene().getWindow();
         currentStage.close();
@@ -171,4 +182,9 @@ public class AdminView {
     }
 
     public void setActionTargetText(String text){ this.actiontarget.setText(text);}
+
+    public String getPassword() {
+        //System.out.println(usernameArea.getText());
+        return passwordArea.getText();
+    }
 }
