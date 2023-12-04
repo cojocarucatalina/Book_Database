@@ -8,14 +8,13 @@ import model.Book;
 import model.Role;
 import model.User;
 import model.validator.Notification;
-import model.validator.ResultFetchException;
-import service.book.BookService;
 import service.user.AuthenticationService;
 import view.AdminView;
-import view.CustomerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 
 public class AdminController {
@@ -36,6 +35,7 @@ public class AdminController {
         this.adminView.addCreateButtonListener(new AdminController.CreateButtonHandler());
         this.adminView.addUpdateButtonListener(new AdminController.UpdateButtonHandler());
         this.adminView.addDeleteButtonListener(new AdminController.DeleteButtonHandler());
+        this.adminView.addRetrieveButtonListener(new AdminController.RetrieveHandler());
         this.adminView.addShowAllListener(new AdminController.ShowAllHandler());
     }
 
@@ -45,6 +45,28 @@ public class AdminController {
         public void handle(ActionEvent event) {
             //loginView.logOut();
             adminView.closeAdminWindow();
+        }
+    }
+
+    private class RetrieveHandler implements EventHandler<ActionEvent> {
+
+        //Optional<User> optionalUser;
+        User optionalUser;
+        List<User> userData = new ArrayList<User>() ;
+        @Override
+        public void handle(ActionEvent event) {
+
+            Long id = adminView.getId();
+            optionalUser = authenticationService.findById(id);
+            userData.clear();
+            userData.add(optionalUser);
+            String checkForNull = optionalUser.toString();
+            if (checkForNull == null){
+                adminView.setActionTargetText("Id not found!");
+            }
+            System.out.println(optionalUser);
+            adminView.setUsersDataOptional(userData);
+
         }
     }
 
@@ -83,7 +105,6 @@ public class AdminController {
             List<User> users = authenticationService.findAll();
             adminView.setUsersData(users);
 
-
         }
     }
 
@@ -116,6 +137,9 @@ public class AdminController {
                     adminView.setActionTargetText("Register successful!");
                 }
             }
+
+            List<User> usersUpdatedList = authenticationService.findAll();
+            adminView.setUsersData(usersUpdatedList);
         }
     }
 
@@ -123,7 +147,6 @@ public class AdminController {
 
         @Override
         public void handle(ActionEvent event) {
-
 
             List<User> users;
             users = authenticationService.findAll();

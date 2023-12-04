@@ -16,6 +16,8 @@ public interface UserRepository {
 
     void removeAll();
 
+    User findById(Long id);
+
     boolean existsByUsername(String username);
 
     boolean updateDatabase(Long id, String username, String password) ;
@@ -23,4 +25,5 @@ public interface UserRepository {
     List<Role> findAllRoles();
 
     void remove(Long id);
+
 }

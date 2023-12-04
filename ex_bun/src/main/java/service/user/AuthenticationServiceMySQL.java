@@ -15,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static database.Constants.Roles.CUSTOMER;
 import static database.Constants.Roles.EMPLOYEE;
@@ -35,6 +36,10 @@ public class AuthenticationServiceMySQL implements AuthenticationService {
     @Override
     public List<User> findAll() {
         return userRepository.findAll();
+    }
+    @Override
+    public User findById(Long id) {
+        return userRepository.findById(id);
     }
     public List<Role> findAllRoles(){
         return userRepository.findAllRoles();

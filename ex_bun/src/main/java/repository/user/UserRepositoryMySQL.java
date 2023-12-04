@@ -1,8 +1,6 @@
 package repository.user;
-import model.Book;
 import model.Role;
 import model.User;
-import model.builder.BookBuilder;
 import model.builder.UserBuilder;
 import model.validator.Notification;
 import repository.security.RightsRolesRepository;
@@ -14,9 +12,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static database.Constants.Tables.USER;
-import static java.util.Collections.singletonList;
 
 public class UserRepositoryMySQL implements UserRepository {
 
@@ -195,6 +193,28 @@ public class UserRepositoryMySQL implements UserRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public User findById(Long id) {
+        String sql = "SELECT * FROM user WHERE id = ?";
+        User user = new User();
+
+        try{
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(1, id);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()){
+                user = getUserFromResultSet(resultSet);
+            }
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return user;
     }
 
 

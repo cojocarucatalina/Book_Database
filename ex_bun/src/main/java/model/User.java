@@ -11,6 +11,11 @@ public class User {
     private String password;
     private List<Role> roles;
 
+//    public User(Optional<User> user) {
+//
+//
+//    }
+
     public Long getId() {
         return id;
     }

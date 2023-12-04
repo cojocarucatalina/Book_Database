@@ -14,6 +14,7 @@ import service.book.BookService;
 import service.user.AuthenticationService;
 import view.AdminView;
 import view.CustomerView;
+import view.EmployeeView;
 import view.LoginView;
 
 import java.util.ArrayList;
@@ -134,13 +135,13 @@ public class LoginController {
     }
 
     private void switchToEmployeeView(){
-        Stage adminStage = new Stage();
+        Stage employeeStage = new Stage();
 
-        AdminView adminView = new AdminView(adminStage);
+        EmployeeView employeeView = new EmployeeView(employeeStage);
         List<User> selected = new ArrayList<>();
-        AdminController adminController = new AdminController(adminView, authenticationService, selected);
+        EmployeeController adminController = new EmployeeController(employeeView, authenticationService, selected);
 
-        adminStage.show();
+        employeeStage.show();
 
     }
 }

@@ -23,6 +23,7 @@ import model.Book;
 import model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public class AdminView {
 
@@ -35,11 +36,13 @@ public class AdminView {
     private Button updateButton;
     private Button showAllButton;
     private ObservableList<User> userData;
+    private Optional<User> userDataOptional;
     private Stage currentStage;
     private Stage previousStage;
     private Label usernameText;
     private TextArea usernameArea;
     private PasswordField passwordArea;
+    private TextArea retrieveArea;
 
     public AdminView(Stage primaryStage){
 
@@ -52,15 +55,20 @@ public class AdminView {
         usernameText.setFont(Font.font("Tahome", FontWeight.EXTRA_BOLD, 10));
 
         usernameArea = new TextArea();
+        retrieveArea = new TextArea();
         passwordArea = new PasswordField();
         usernameArea.setEditable(true);
+        retrieveArea.setEditable(true);
         passwordArea.setEditable(true);
 
         usernameArea.setPrefSize(200, 20);  // Set the preferred width and height
+        retrieveArea.setPrefSize(100, 20);  // Set the preferred width and height
         passwordArea.setPrefSize(200, 20);  // Set the preferred width and height
         usernameArea.setMaxHeight(50);
+        retrieveArea.setMaxHeight(50);
         passwordArea.setMaxHeight(50);
         usernameArea.setWrapText(true);
+        retrieveArea.setWrapText(true);
         //usernameArea.setPrefSize(10, 50);
 
 
@@ -71,7 +79,7 @@ public class AdminView {
         primaryStage.setScene(scene);
 
         // initializeButtons(gridPane);
-        initializeCustomerView(gridPane);
+        initializeAdminView(gridPane);
         initializeText(gridPane);
 
         primaryStage.show();
@@ -84,7 +92,7 @@ public class AdminView {
         gridPane.setPadding(new Insets(0, 0, 0, 0));
     }
 
-    private void initializeCustomerView(GridPane gridPane){
+    private void initializeAdminView(GridPane gridPane){
 
         userTableView = new TableView<>();
         TableColumn<User, Integer> usernameColumn = new TableColumn<>("user-name");
@@ -126,6 +134,7 @@ public class AdminView {
 
         gridPane.add(buttonsShowAll, 1, 1, 1, 1);
         gridPane.add(buttonsDelete, 1, 6, 1, 1);
+        gridPane.add(retrieveArea, 0, 6, 1, 1);
 
         gridPane.add(actiontarget, 3, 6);
 
@@ -187,4 +196,25 @@ public class AdminView {
         //System.out.println(usernameArea.getText());
         return passwordArea.getText();
     }
+
+    public Long getId() {
+        System.out.println(retrieveArea.getText());
+        if(retrieveArea.getText().isEmpty()){
+            return 0L;
+        }
+        else {
+            return Long.valueOf(retrieveArea.getText());
+        }
+
+    }
+
+    public void setUsersDataOptional(List<User> user) {
+        userData = FXCollections.observableArrayList(user);
+        userTableView.setItems(userData);
+    }
+
+//    public void setUsersDataOptional(Optional<User> user) {
+//        userDataOptional = FXCollections.observableArrayList(user);
+//        userTableView.setItems(userData);
+//    }
 }
