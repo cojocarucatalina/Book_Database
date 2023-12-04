@@ -1,4 +1,5 @@
 package repository.user;
+import model.Role;
 import model.User;
 import model.builder.UserBuilder;
 import model.validator.Notification;
@@ -9,10 +10,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static database.Constants.Tables.USER;
-import static java.util.Collections.singletonList;
 
 public class UserRepositoryMySQL implements UserRepository {
 
@@ -27,7 +29,71 @@ public class UserRepositoryMySQL implements UserRepository {
 
     @Override
     public List<User> findAll() {
-        return null;
+        String sql = "SELECT * FROM user;";
+
+        List<User> users = new ArrayList<>();
+
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next()){
+                users.add(getUserFromResultSet(resultSet));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return users;
+    }
+
+    @Override
+    public List<Role> findAllRoles() {
+        String sql = "SELECT * FROM user_role;";
+
+        List<Role> users = new ArrayList<>();
+
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next()){
+                //users.add(getUserFromResultSet(resultSet));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return users;
+    }
+
+
+    public boolean updateDatabase(Long id, String username, String password) {
+        String updateSql = "UPDATE user SET password = ? WHERE id = ?";
+
+        try {
+            PreparedStatement updateStatement = connection.prepareStatement(updateSql);
+            //updateStatement.setInt(1, quantity);
+            updateStatement.setString(1, password);
+            updateStatement.setLong(2, id);
+
+            int rowsUpdated = updateStatement.executeUpdate();
+            return (rowsUpdated != 1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private User getUserFromResultSet(ResultSet resultSet) throws SQLException{
+        return new UserBuilder()
+                .setId(resultSet.getLong("id"))
+                .setUsername(resultSet.getString("username"))
+                .setPassword(resultSet.getString("password"))
+                //.setRoles(new java.sql.Date(resultSet.getDate("publishedDate").getTime()).toLocalDate())
+                .build();
     }
 
     // SQL Injection Attacks should not work after fixing functions
@@ -39,6 +105,7 @@ public class UserRepositoryMySQL implements UserRepository {
     public Notification<User> findByUsernameAndPassword(String username, String password) {
 
         Notification<User> findByUsernameAndPasswordNotification = new Notification<>();
+
         try {
             Statement statement = connection.createStatement();
 
@@ -70,15 +137,16 @@ public class UserRepositoryMySQL implements UserRepository {
     @Override
     public boolean save(User user) {
         Notification<User> findByUsernameAndPasswordNotification = new Notification<>();
+
+        if (existsByUsername(user.getUsername())){
+            System.out.println("Username exists");
+            findByUsernameAndPassword("","");
+            findByUsernameAndPasswordNotification.addError("Username taken!");
+
+            //findByUsernameAndPasswordNotification.addError("Username taken!");
+            return false;
+        }
         try {
-
-            if (existsByUsername(user.getUsername())){
-                System.out.println("Username exists");
-
-                findByUsernameAndPasswordNotification.addError("Username taken!");
-                return false;
-
-            }
             //ana@are.mere
 
             PreparedStatement insertUserStatement = connection
@@ -112,6 +180,43 @@ public class UserRepositoryMySQL implements UserRepository {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void remove(Long id) {
+        try {
+            String sql = "DELETE FROM user WHERE id = ?";
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setLong(1, id);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public User findById(Long id) {
+        String sql = "SELECT * FROM user WHERE id = ?";
+        User user = new User();
+
+        try{
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(1, id);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()){
+                user = getUserFromResultSet(resultSet);
+            }
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return user;
+    }
+
 
     @Override
     public boolean existsByUsername(String email) {

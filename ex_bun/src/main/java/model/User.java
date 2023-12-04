@@ -11,6 +11,11 @@ public class User {
     private String password;
     private List<Role> roles;
 
+//    public User(Optional<User> user) {
+//
+//
+//    }
+
     public Long getId() {
         return id;
     }
@@ -41,5 +46,10 @@ public class User {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    @Override
+    public String toString() {
+        return username;
     }
 }

@@ -10,18 +10,43 @@ import repository.user.UserRepository;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import static database.Constants.Roles.CUSTOMER;
+import static database.Constants.Roles.EMPLOYEE;
 
 public class AuthenticationServiceMySQL implements AuthenticationService {
 
     private final UserRepository userRepository;
     private final RightsRolesRepository rightsRolesRepository;
+    private final Connection connection;
 
-    public AuthenticationServiceMySQL(UserRepository userRepository, RightsRolesRepository rightsRolesRepository) {
+
+    public AuthenticationServiceMySQL(UserRepository userRepository, RightsRolesRepository rightsRolesRepository, Connection connection) {
         this.userRepository = userRepository;
         this.rightsRolesRepository = rightsRolesRepository;
+        this.connection = connection;
+    }
+
+    @Override
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+    @Override
+    public User findById(Long id) {
+        return userRepository.findById(id);
+    }
+    public List<Role> findAllRoles(){
+        return userRepository.findAllRoles();
+    }
+
+    public void remove(Long id){
+        userRepository.remove(id);
     }
 
     @Override
@@ -52,14 +77,59 @@ public class AuthenticationServiceMySQL implements AuthenticationService {
     }
 
     @Override
+    public Notification<Boolean> registerEmployee(String username, String password) {
+
+        Role customerRole = rightsRolesRepository.findRoleByTitle(EMPLOYEE);
+
+        User user = new UserBuilder()
+                .setUsername(username)
+                .setPassword(password)
+                .setRoles(Collections.singletonList(customerRole))
+                .build();
+
+        UserValidator userValidator = new UserValidator(user);
+
+        boolean userValid = userValidator.validateEmployee();
+        Notification<Boolean> userRegisterNotification = new Notification<>();
+
+        if (!userValid){
+            userValidator.getErrors().forEach(userRegisterNotification::addError);
+            userRegisterNotification.setResult(Boolean.FALSE);
+        } else {
+            user.setPassword(hashPassword(password));
+            userRegisterNotification.setResult(userRepository.save(user));
+        }
+
+        return userRegisterNotification;
+    }
+
+    @Override
+    public boolean updateEmployee(String username, String password) {
+        String updateSql = "UPDATE user SET password = ? WHERE username = ?";
+
+        try {
+            PreparedStatement updateStatement = connection.prepareStatement(updateSql);
+            updateStatement.setString(1, hashPassword(password));
+            updateStatement.setString(2, username);
+
+            int rowsUpdated = updateStatement.executeUpdate();
+            return (rowsUpdated != 1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
     public Notification<User> login(String username, String password) {
         return userRepository.findByUsernameAndPassword(username, hashPassword(password));
     }
 
     @Override
-    public boolean logout(User user) {
-        return false;
+    public boolean updateDatabase(Long id, String username, String password) {
+        return userRepository.updateDatabase(id, username, hashPassword(password));
     }
+
 
     private String hashPassword(String password) {
         try {

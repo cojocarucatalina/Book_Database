@@ -2,6 +2,7 @@ package repository.book;
 
 import model.Book;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +44,20 @@ public class BookRepositoryCacheDecorator extends BookRepositoryDecorator{
         cache.invalidateCache();
         return decoratedRepository.save(book);
     }
+
+    @Override
+    public void remove(Long id) {}
+
+    @Override
+    public Book addNewBook(Long id, String author, String title, int price, int quantity) {
+        return null;
+    }
+
+    @Override
+    public boolean updateDatabaseForPrice(Long id, int price){
+        return false;
+    }
+
 
     @Override
     public void removeAll() {
