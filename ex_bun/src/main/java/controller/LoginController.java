@@ -45,9 +45,8 @@ public class LoginController {
         public void handle(javafx.event.ActionEvent event) {
             String username = loginView.getUsername();
             username = "admin@admin";
-            username = "employee@here";
             String password = loginView.getPassword();
-            password = "suntangajat1/";
+            password = "suntadmin1/";
 
             Notification<User> loginNotification = authenticationService.login(username, password);
 
