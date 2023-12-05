@@ -15,8 +15,11 @@ public interface BookRepository {
 
     void removeAll();
 
-    boolean updateDatabase(Long id, int quantity, String title);
+    boolean updateDatabase(Long id, int quantity);
     boolean updateDatabaseForPrice(Long id, int price);
+
+    boolean updateDatabaseForTitle(Long id, String title);
+    boolean updateDatabaseForAuthor(Long id, String author);
 
     Book addNewBook(Long id, String author, String title, int price, int quantity);
     void remove(Long id);

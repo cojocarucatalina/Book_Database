@@ -37,13 +37,23 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public boolean updateDatabase(Long id, int quantity, String title) {
-        return bookRepository.updateDatabase(id, quantity, title);
+    public boolean updateDatabaseForQuantity(Long id, int quantity) {
+        return bookRepository.updateDatabase(id, quantity);
     }
 
     @Override
     public boolean updateDatabaseForPrice(Long id, int price){
         return bookRepository.updateDatabaseForPrice(id, price);
+    }
+
+    @Override
+    public boolean updateDatabaseForTitle(Long id, String title){
+        return bookRepository.updateDatabaseForTitle(id,title);
+    }
+
+    @Override
+    public boolean updateDatabaseForAuthor(Long id, String author){
+        return bookRepository.updateDatabaseForAuthor(id,author);
     }
 
     @Override

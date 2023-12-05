@@ -3,16 +3,9 @@ package controller;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import model.Book;
-import model.User;
-import model.builder.BookBuilder;
-import model.validator.Notification;
 import service.book.BookService;
-import service.user.AuthenticationService;
-import view.AdminView;
-import view.CustomerView;
 import view.EmployeeView;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,10 +63,19 @@ public class EmployeeController {
             int price = employeeView.getPrice();
             //Date date = employeeView.getDate();
 
-            bookService.addNewBook(id,author,title,price,quantity);
+            System.out.println(id+" "+author+" "+title+" "+quantity+" "+price);
 
-            List<Book> books = bookService.findAll();
-            employeeView.setBooksData(books);
+            if (author.isEmpty() || title.isEmpty() || quantity ==0 || price==0){
+                employeeView.setActionTargetText("Could not create new book!");
+
+            }
+            else{
+
+                bookService.addNewBook(id,author,title,price,quantity);
+
+                List<Book> books = bookService.findAll();
+                employeeView.setBooksData(books);
+            }
 
         }
     }
@@ -93,15 +95,33 @@ public class EmployeeController {
             System.out.println(title);
             System.out.println(quantity);
 
+            Book selectedBook = employeeView.getSelectedBook();
+            try{
+                //selectedBook.getId()!=0
+                id = selectedBook.getId();
+            }
+            catch(NullPointerException nul){
+                employeeView.setActionTargetText("Could not update! Select a book!");
+
+            }
+
+
             if ((id == 0)){
-                employeeView.setActionTargetText("Could not update!");
+                employeeView.setActionTargetText("Could not update! Id not valid!");
             }
             else {
+
                 if (quantity != 0) {
-                    bookService.updateDatabase(id, quantity, title);
+                    bookService.updateDatabaseForQuantity(id, quantity);
                 }
                 if (price != 0) {
                     bookService.updateDatabaseForPrice(id, price);
+                }
+                if (!author.isEmpty()) {
+                    bookService.updateDatabaseForAuthor(id, author);
+                }
+                if (!title.isEmpty()) {
+                    bookService.updateDatabaseForTitle(id, title);
                 }
 
                 List<Book> books = bookService.findAll();
@@ -138,7 +158,9 @@ public class EmployeeController {
         @Override
         public void handle(ActionEvent event) {
 
-            Long id = employeeView.getId();
+            Long id = employeeView.getIdForRetrieve();
+            System.out.println(id);
+
             try {
                 book = bookService.findById(id);
             } catch (IllegalArgumentException il) {
@@ -160,7 +182,7 @@ public class EmployeeController {
                 employeeView.setActionTargetText("Not enough books!");
             }
             else {
-                bookService.updateDatabase(selectedBook.getId(), quantity - 1, selectedBook.getTitle());
+                bookService.updateDatabaseForQuantity(selectedBook.getId(), quantity - 1);
 
                 List<Book> books = bookService.findAll();
                 employeeView.setBooksData(books);

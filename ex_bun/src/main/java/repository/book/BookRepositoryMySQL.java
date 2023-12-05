@@ -59,14 +59,47 @@ public class BookRepositoryMySQL implements BookRepository {
         return book;
     }
 
-    public boolean updateDatabase(Long id, int quantity, String title) {
-        String updateSql = "UPDATE book SET quantity = ?, title = ? WHERE id = ?";
+    public boolean updateDatabase(Long id, int quantity) {
+        String updateSql = "UPDATE book SET quantity = ? WHERE id = ?";
 
         try {
             PreparedStatement updateStatement = connection.prepareStatement(updateSql);
             updateStatement.setInt(1, quantity);
-            updateStatement.setString(2, title);
-            updateStatement.setLong(3, id);
+            //updateStatement.setString(2, title);
+            updateStatement.setLong(2, id);
+
+            int rowsUpdated = updateStatement.executeUpdate();
+            return (rowsUpdated != 1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateDatabaseForTitle(Long id, String title){
+        String updateSql = "UPDATE book SET title = ? WHERE id = ?";
+
+        try {
+            PreparedStatement updateStatement = connection.prepareStatement(updateSql);
+            updateStatement.setString(1, title);
+            //updateStatement.setString(2, title);
+            updateStatement.setLong(2, id);
+
+            int rowsUpdated = updateStatement.executeUpdate();
+            return (rowsUpdated != 1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public boolean updateDatabaseForAuthor(Long id, String author){
+        String updateSql = "UPDATE book SET author = ? WHERE id = ?";
+
+        try {
+            PreparedStatement updateStatement = connection.prepareStatement(updateSql);
+            updateStatement.setString(1, author);
+            //updateStatement.setString(2, title);
+            updateStatement.setLong(2, id);
 
             int rowsUpdated = updateStatement.executeUpdate();
             return (rowsUpdated != 1);
@@ -91,6 +124,7 @@ public class BookRepositoryMySQL implements BookRepository {
             return false;
         }
     }
+
 
     @Override
     public void remove(Long id) {
@@ -161,6 +195,7 @@ public class BookRepositoryMySQL implements BookRepository {
             e.printStackTrace();
         }
     }
+
 
     private Book getBookFromResultSet(ResultSet resultSet) throws SQLException {
         return new BookBuilder()
