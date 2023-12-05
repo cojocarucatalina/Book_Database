@@ -196,6 +196,34 @@ public class UserRepositoryMySQL implements UserRepository {
     }
 
     @Override
+    public List<User> findAllEmployees() {
+        String sql = "SELECT u.* FROM user u " +
+                "JOIN user_role ur ON u.id = ur.user_id " +
+                "WHERE ur.role_id = ?";
+
+        //String sql = "SELECT user_id FROM user_role WHERE role_id = ?;";
+
+        List<User> users = new ArrayList<>();
+
+        long role_id = 2;
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(1, role_id);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()){
+                users.add(getUserFromResultSet(resultSet));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return users;
+    }
+    @Override
     public User findById(Long id) {
         String sql = "SELECT * FROM user WHERE id = ?";
         User user = new User();

@@ -18,7 +18,9 @@ public interface UserRepository {
 
     User findById(Long id);
 
-    boolean existsByUsername(String username);
+     List<User> findAllEmployees() ;
+
+     boolean existsByUsername(String username);
 
     boolean updateDatabase(Long id, String username, String password) ;
 

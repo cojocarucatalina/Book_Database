@@ -9,9 +9,12 @@ public interface BookService {
     List<Book> findAll();
 
     Book findById(Long id);
-
+    Book addNewBook(Long id, String author, String title, int price, int quantity);
     boolean save(Book book);
-    boolean updateDatabase(Long id, int quantity, String title);
+    boolean updateDatabaseForQuantity(Long id, int quantity);
+    boolean updateDatabaseForTitle(Long id, String title);
+    boolean updateDatabaseForAuthor(Long id, String author);
+    boolean updateDatabaseForPrice(Long id, int price);
 
-    int getAgeOfBook(Long id);
+    void remove(Long id);
 }

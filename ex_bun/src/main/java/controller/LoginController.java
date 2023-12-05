@@ -44,9 +44,9 @@ public class LoginController {
         @Override
         public void handle(javafx.event.ActionEvent event) {
             String username = loginView.getUsername();
-            username = "admin@admin";
+            username = "employee@here";
             String password = loginView.getPassword();
-            password = "suntadmin1/";
+            password = "suntangajat1/";
 
             Notification<User> loginNotification = authenticationService.login(username, password);
 
@@ -138,8 +138,9 @@ public class LoginController {
         Stage employeeStage = new Stage();
 
         EmployeeView employeeView = new EmployeeView(employeeStage);
-        List<User> selected = new ArrayList<>();
-        EmployeeController adminController = new EmployeeController(employeeView, authenticationService, selected);
+        List<Book> selected = new ArrayList<>();
+
+        EmployeeController adminController = new EmployeeController(employeeView, bookService, selected);
 
         employeeStage.show();
 

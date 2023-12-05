@@ -1,22 +1,12 @@
 package controller;
 
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.control.TableView;
-import javafx.stage.Stage;
-import launcher.Launcher;
 import model.Book;
 import service.book.BookService;
-import service.user.AuthenticationService;
 import view.CustomerView;
-import view.LoginView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class CustomerController {
@@ -72,7 +62,7 @@ public class CustomerController {
                 for (Book e : addedToCartBooks){
                     int quantity = e.getQuantity();
                     if (quantity > 1) {
-                    bookService.updateDatabase(e.getId(),quantity -1, e.getTitle());
+                    bookService.updateDatabaseForQuantity(e.getId(),quantity -1);
                     }
                 }
 
