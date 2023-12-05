@@ -84,7 +84,7 @@ public class EmployeeView {
         dateText = new Label("date as dd.mm.yyy:");
         dateText.setFont(Font.font("Tahome", FontWeight.EXTRA_BOLD, 10));
 
-        stockText = new Label("stock:");
+        stockText = new Label("quantity:");
         stockText.setFont(Font.font("Tahome", FontWeight.EXTRA_BOLD, 10));
 
         priceText = new Label("price:");
@@ -145,7 +145,6 @@ public class EmployeeView {
         primaryStage.show();
     }
 
-
     private void initializeGridPane(GridPane gridPane){
         gridPane.setAlignment(Pos.CENTER);
         gridPane.setHgap(10);
@@ -154,8 +153,6 @@ public class EmployeeView {
     }
 
     private void initializeEmployeeView(GridPane gridPane){
-
-
 
         bookTableView = new TableView<>();
         TableColumn<Book, Integer> idColumn = new TableColumn<>("ID");
@@ -212,16 +209,16 @@ public class EmployeeView {
         gridPane.add(idText,3,0,1,1);
         gridPane.add(titleText,4,0,1,1);
         gridPane.add(authorText,5,0,1,1);
-        gridPane.add(dateText,3,3,1,1);
-        gridPane.add(stockText,4,3,1,1);
-        gridPane.add(priceText,5,3,1,1);
+        //gridPane.add(dateText,3,3,1,1);
+        gridPane.add(stockText,5,3,1,1);
+        gridPane.add(priceText,4,3,1,1);
 
         gridPane.add(idArea,3,1,1,1);
         gridPane.add(titleArea,4,1,1,1);
         gridPane.add(authorArea,5,1,1,1);
-        gridPane.add(dateArea,3,4,1,1);
-        gridPane.add(stockArea,4,4,1,1);
-        gridPane.add(priceArea,5,4,1,1);
+        //gridPane.add(dateArea,3,4,1,1);
+        gridPane.add(stockArea,5,4,1,1);
+        gridPane.add(priceArea,4,4,1,1);
 
         gridPane.add(buttonsCreate, 3, 5, 1, 1);
         gridPane.add(buttonsUpdate, 4, 5, 1, 1);
@@ -236,6 +233,9 @@ public class EmployeeView {
         gridPane.add(actiontarget, 4, 5);
 
         gridPane.add(tableViewBox, 1, 4, 1, 2);
+
+        setActionTargetText("Select a book and enter\nnew values to update.\nAlso can update by introducing\na valid id!");
+
 
     }
 
@@ -291,6 +291,16 @@ public class EmployeeView {
         }
         else {
             return Long.valueOf(idArea.getText());
+        }
+    }
+
+    public Long getIdForRetrieve() {
+        System.out.println(retrieveArea.getText());
+        if(retrieveArea.getText().isEmpty()){
+            return 0L;
+        }
+        else {
+            return Long.valueOf(retrieveArea.getText());
         }
     }
 

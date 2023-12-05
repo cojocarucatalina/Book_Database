@@ -13,6 +13,15 @@ public class BookRepositoryCacheDecorator extends BookRepositoryDecorator{
         super(bookRepository);
         this.cache = cache;
     }
+    @Override
+    public boolean updateDatabaseForAuthor(Long id, String author){
+        return false;
+    }
+
+    @Override
+    public boolean updateDatabaseForTitle(Long id, String title){
+        return false;
+    }
 
     @Override
     public List<Book> findAll() {
@@ -48,6 +57,7 @@ public class BookRepositoryCacheDecorator extends BookRepositoryDecorator{
     @Override
     public void remove(Long id) {}
 
+
     @Override
     public Book addNewBook(Long id, String author, String title, int price, int quantity) {
         return null;
@@ -66,7 +76,7 @@ public class BookRepositoryCacheDecorator extends BookRepositoryDecorator{
     }
 
     @Override
-    public boolean updateDatabase(Long id, int quantity, String title) {
+    public boolean updateDatabase(Long id, int quantity) {
         return false;
     }
 }
