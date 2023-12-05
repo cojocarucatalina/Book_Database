@@ -13,8 +13,6 @@ import view.AdminView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 
 public class AdminController {
@@ -76,7 +74,7 @@ public class AdminController {
         private List<Role> userRole;
         @Override
         public void handle(ActionEvent event) {
-            users = authenticationService.findAll();
+            users = authenticationService.findAllEmployees();
             userRole = authenticationService.findAllRoles();
             System.out.println(users);
             for (User user: users){
@@ -102,7 +100,7 @@ public class AdminController {
             System.out.println(selectedUser.getId());
             authenticationService.remove(selectedUser.getId());
 
-            List<User> users = authenticationService.findAll();
+            List<User> users = authenticationService.findAllEmployees();
             adminView.setUsersData(users);
 
         }
@@ -138,7 +136,7 @@ public class AdminController {
                 }
             }
 
-            List<User> usersUpdatedList = authenticationService.findAll();
+            List<User> usersUpdatedList = authenticationService.findAllEmployees();
             adminView.setUsersData(usersUpdatedList);
         }
     }
@@ -148,21 +146,77 @@ public class AdminController {
         @Override
         public void handle(ActionEvent event) {
 
-            List<User> users;
-            users = authenticationService.findAll();
+            User user = adminView.getSelectedUser();
 
-            String username = adminView.getUsername();
+            String username = user.getUsername();
+            String newUsername = adminView.getUsername();
             String password = adminView.getPassword();
-            System.out.println(username);
-            boolean registerNotification = authenticationService.updateEmployee(username, password);
+            Long id = user.getId();
 
-            if (registerNotification){
-                adminView.setActionTargetText("Something went wrong!");
+            System.out.println(username);
+            System.out.println(password);
+            System.out.println(id);
+
+            try{
+                //selectedBook.getId()!=0
+                id = user.getId();
+            }
+            catch(NullPointerException nul){
+                adminView.setActionTargetText("Could not update! Select user!");
+
+            }
+
+            if ((id == 0)){
+                adminView.setActionTargetText("Could not update! Id not valid!");
             }
             else {
-                adminView.setActionTargetText("Password updated!");
+
+                if (!newUsername.isEmpty()) {
+                    authenticationService.updateEmployeeUsername(newUsername, id);
+                }
+                if (!password.isEmpty()) {
+                    authenticationService.updateEmployeePassword(password, id);
+                }
+                List<User> users = authenticationService.findAllEmployees();
+                adminView.setUsersData(users);
+
+                adminView.setActionTargetText("Updated!");
             }
 
+//            try {
+//                if (!user.toString().isEmpty()) {
+//
+//                    if (!newUsername.isEmpty()) {
+//
+//                        boolean registerNotification = authenticationService.updateEmployeeUsername(newUsername, id);
+//                        adminView.setActionTargetText("Username updated!");
+//
+//                        if (!password.isEmpty()) {
+//
+//                            if (user.toString().isEmpty()) {
+//
+//                                adminView.setActionTargetText("Select an employee!");
+//
+//                            }
+//                            boolean registerNotificationTwo = authenticationService.updateEmployeeUsername(newUsername, id);
+//                            adminView.setActionTargetText("Password and Username updated!");
+//
+//                        }
+//                    }
+//                    else if (!password.isEmpty()){
+//                        boolean registerNotificationTwo = authenticationService.updateEmployeePassword(password, id);
+//                        adminView.setActionTargetText("Password updated!");
+//                    }
+//                }
+//
+//                List<User> usersUpdatedList = authenticationService.findAllEmployees();
+//                adminView.setUsersData(usersUpdatedList);
+//
+//
+//            } catch (NullPointerException nul) {
+//
+//                adminView.setActionTargetText("Select an employee!");
+//            }
         }
     }
 }

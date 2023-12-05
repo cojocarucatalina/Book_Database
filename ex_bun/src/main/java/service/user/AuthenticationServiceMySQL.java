@@ -11,11 +11,8 @@ import repository.user.UserRepository;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static database.Constants.Roles.CUSTOMER;
 import static database.Constants.Roles.EMPLOYEE;
@@ -47,6 +44,10 @@ public class AuthenticationServiceMySQL implements AuthenticationService {
 
     public void remove(Long id){
         userRepository.remove(id);
+    }
+
+    public List<User> findAllEmployees(){
+        return userRepository.findAllEmployees();
     }
 
     @Override
@@ -104,21 +105,16 @@ public class AuthenticationServiceMySQL implements AuthenticationService {
     }
 
     @Override
-    public boolean updateEmployee(String username, String password) {
-        String updateSql = "UPDATE user SET password = ? WHERE username = ?";
-
-        try {
-            PreparedStatement updateStatement = connection.prepareStatement(updateSql);
-            updateStatement.setString(1, hashPassword(password));
-            updateStatement.setString(2, username);
-
-            int rowsUpdated = updateStatement.executeUpdate();
-            return (rowsUpdated != 1);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+    public boolean updateEmployeeUsername(String username, Long id){
+        return userRepository.updateEmployeeUsername(username,id);
     }
+
+    @Override
+    public boolean updateEmployeePassword(String password,  Long id){
+        return userRepository.updateEmployeePassword(hashPassword(password),id);
+
+    }
+
 
     @Override
     public Notification<User> login(String username, String password) {

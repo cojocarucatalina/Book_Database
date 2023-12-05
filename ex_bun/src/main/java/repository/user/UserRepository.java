@@ -18,6 +18,10 @@ public interface UserRepository {
 
     User findById(Long id);
 
+    boolean updateEmployeeUsername(String username, Long id);
+
+    boolean updateEmployeePassword(String password,  Long id);
+
      List<User> findAllEmployees() ;
 
      boolean existsByUsername(String username);

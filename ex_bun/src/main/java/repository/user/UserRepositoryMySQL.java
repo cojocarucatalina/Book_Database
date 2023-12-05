@@ -4,6 +4,8 @@ import model.User;
 import model.builder.UserBuilder;
 import model.validator.Notification;
 import repository.security.RightsRolesRepository;
+import service.user.AuthenticationService;
+import service.user.AuthenticationServiceMySQL;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,9 +22,11 @@ public class UserRepositoryMySQL implements UserRepository {
 
     private final Connection connection;
     private final RightsRolesRepository rightsRolesRepository;
+    private AuthenticationServiceMySQL authenticationService;
 
 
     public UserRepositoryMySQL(Connection connection, RightsRolesRepository rightsRolesRepository) {
+        //this.authenticationService =authenticationService;
         this.connection = connection;
         this.rightsRolesRepository = rightsRolesRepository;
     }
@@ -256,6 +260,41 @@ public class UserRepositoryMySQL implements UserRepository {
             ResultSet userResultSet = statement.executeQuery(fetchUserSql);
             return userResultSet.next();
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    @Override
+    public boolean updateEmployeeUsername(String username, Long id) {
+        String updateSql = "UPDATE user SET username = ? WHERE id = ?";
+
+        try {
+            PreparedStatement updateStatement = connection.prepareStatement(updateSql);
+            updateStatement.setString(1, username);
+            updateStatement.setLong(2, id);
+
+            int rowsUpdated = updateStatement.executeUpdate();
+            return (rowsUpdated != 1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean updateEmployeePassword(String password, Long id) {
+        String updateSql = "UPDATE user SET password = ? WHERE id = ?";
+
+        try {
+            PreparedStatement updateStatement = connection.prepareStatement(updateSql);
+            updateStatement.setString(1, password);
+            updateStatement.setLong(2, id);
+
+            int rowsUpdated = updateStatement.executeUpdate();
+            return (rowsUpdated != 1);
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
