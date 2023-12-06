@@ -1,13 +1,57 @@
 package controller;
 
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.property.TextAlignment;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import model.Book;
 import service.book.BookService;
 import view.EmployeeView;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
+
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import model.Book;
+import model.User;
+import model.validator.Notification;
+import service.book.BookService;
+import service.user.AuthenticationService;
+import view.CustomerView;
+import view.EmployeeView;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class EmployeeController {
 
@@ -15,6 +59,8 @@ public class EmployeeController {
     List<Book> addedToCartBooks = new ArrayList<>();
     private final BookService bookService;
     private final List<Book> selectedBooks;
+
+    private final String pdfFilePath = "Raport employee" +  ".pdf";
 
     public EmployeeController(EmployeeView employeeView, BookService bookService, List<Book> selectedBooks) {
         this.selectedBooks = selectedBooks;
@@ -30,11 +76,33 @@ public class EmployeeController {
         this.employeeView.addShowAllListener(new EmployeeController.ShowAllHandler());
     }
 
+
     private class LogOutHandler implements EventHandler<ActionEvent> {
 
         @Override
         public void handle(ActionEvent event) {
             //loginView.logOut();
+
+            try {
+                PdfWriter writer = new PdfWriter(pdfFilePath);
+                PdfDocument pdfDocument = new PdfDocument(writer);
+                Document document = new Document(pdfDocument);
+
+                document.add(new Paragraph("SOLD BOOK RAPORT\n\n\n"));
+
+
+                for (Book soldBook : selectedBooks) {
+                    document.add(new Paragraph("Title: " + soldBook.getTitle()));
+                    document.add(new Paragraph("Author: " + soldBook.getAuthor()));
+                    document.add(new Paragraph("Price: " + soldBook.getPrice()));
+                    //document.add(new Paragraph("Employee id: " + employeeView.getEmployeeId()));
+                    document.add(new Paragraph("*   *   **   *   **   *   **   *   **   *   *"));
+                }
+
+                document.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             employeeView.closeEmployeeWindow();
         }
     }
@@ -128,6 +196,8 @@ public class EmployeeController {
                 employeeView.setBooksData(books);
 
                 employeeView.setActionTargetText("Updated!");
+                employeeView.setAuthor("");
+                employeeView.setTitle("");
             }
 
         }
@@ -173,20 +243,42 @@ public class EmployeeController {
         }
     }
 
+
+
     public class SellButtonHandler implements EventHandler<ActionEvent>{
         @Override
         public void handle(ActionEvent event) {
-            Book selectedBook = employeeView.getSelectedBook();
-            int quantity = selectedBook.getQuantity();
-            if (quantity<1){
-                employeeView.setActionTargetText("Not enough books!");
-            }
-            else {
-                bookService.updateDatabaseForQuantity(selectedBook.getId(), quantity - 1);
 
-                List<Book> books = bookService.findAll();
-                employeeView.setBooksData(books);
+
+            Book selectedBook = employeeView.getSelectedBook();
+
+            try{
+                //selectedBook.getId()!=0
+                Long id = selectedBook.getId();
+
+
+                int quantity = selectedBook.getQuantity();
+
+                if (quantity<1){
+                    employeeView.setActionTargetText("Not enough books!");
+                }
+                else {
+                    bookService.updateDatabaseForQuantity(selectedBook.getId(), quantity - 1);
+
+                    selectedBooks.add(selectedBook);
+
+                    List<Book> books = bookService.findAll();
+                    employeeView.setBooksData(books);
+                    employeeView.setActionTargetText("Book sold!");
+
+                }
             }
+            catch(NullPointerException nul){
+                employeeView.setActionTargetText("Select a book!");
+
+            }
+
+
         }
     }
 }

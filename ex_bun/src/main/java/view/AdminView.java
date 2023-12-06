@@ -19,7 +19,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import model.Book;
 import model.User;
 
 import java.util.List;
@@ -34,6 +33,7 @@ public class AdminView {
     private Button deleteButton;
     private Button createButton;
     private Button updateButton;
+    private Button showEmployees;
     private Button showAllButton;
     private ObservableList<User> userData;
     private Optional<User> userDataOptional;
@@ -52,7 +52,7 @@ public class AdminView {
         GridPane gridPane = new GridPane();
         initializeGridPane(gridPane);
 
-        usernameText = new Label("username add or update:");
+        usernameText = new Label("username to add or update:");
         usernameText.setFont(Font.font("Tahome", FontWeight.EXTRA_BOLD, 10));
 
         passwordText = new Label("password to add or update:");
@@ -119,6 +119,7 @@ public class AdminView {
         updateButton = new Button("Update");
         createButton = new Button("Create");
         deleteButton = new Button("Delete");
+        showEmployees = new Button("Employees");
         showAllButton = new Button("Show All");
 
 
@@ -132,7 +133,11 @@ public class AdminView {
 
         HBox buttonsShowAll = new HBox(10);
         buttonsShowAll.setAlignment(Pos.BOTTOM_CENTER);
-        buttonsShowAll.getChildren().addAll(showAllButton, logOutButton);
+        buttonsShowAll.getChildren().addAll(showEmployees, logOutButton);
+
+        HBox buttonsShow = new HBox(10);
+        buttonsShow.setAlignment(Pos.BOTTOM_CENTER);
+        buttonsShow.getChildren().addAll(showAllButton);
 
         gridPane.add(usernameText,3,0,1,1);
         gridPane.add(passwordText,3,2,1,1);
@@ -141,6 +146,7 @@ public class AdminView {
         gridPane.add(buttonsCreate, 3, 4, 1, 1);
 
         gridPane.add(buttonsShowAll, 1, 2, 1, 1);
+        gridPane.add(buttonsShow, 0, 2, 1, 1);
         gridPane.add(buttonsDelete, 1, 7, 1, 1);
         gridPane.add(retrieveArea, 0, 7, 1, 1);
 
@@ -174,7 +180,11 @@ public class AdminView {
         updateButton.setOnAction(updateButtonHandler);
     }
 
-    public void addShowAllListener(EventHandler<ActionEvent> showAllHandler) {
+    public void addShowEmployees(EventHandler<ActionEvent> addshowEmployees) {
+        showEmployees.setOnAction(addshowEmployees);
+    }
+
+    public void addShowAll(EventHandler<ActionEvent> showAllHandler) {
         showAllButton.setOnAction(showAllHandler);
     }
 

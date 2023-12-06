@@ -22,9 +22,10 @@ public interface UserRepository {
 
     boolean updateEmployeePassword(String password,  Long id);
 
-     List<User> findAllEmployees() ;
+    List<User> findAllEmployees() ;
+    List<User> findAllCustomers();
 
-     boolean existsByUsername(String username);
+    boolean existsByUsername(String username);
 
     boolean updateDatabase(Long id, String username, String password) ;
 
