@@ -338,4 +338,15 @@ public class EmployeeView {
         return bookTableView.getSelectionModel().getSelectedItem();
     }
 
+    public void setAuthor(String s) {
+        authorArea.setText(s);
+    }
+
+    public void setTitle(String s) {
+        titleArea.setText(s);
+    }
+    public Long getEmployeeId(){
+        System.out.println(this.getId()+" Employee id");
+        return this.getId();
+    }
 }
